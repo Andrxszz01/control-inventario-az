@@ -140,7 +140,7 @@ MIT License - Libre uso para proyectos comerciales y personales.
 
 ## 🤝 Soporte
 
-Para soporte y preguntas, contactar a soporte@azsoftware.com
+Para soporte y preguntas, contactar a manuel-lionel123@hotmail.com
 
 ---
 
