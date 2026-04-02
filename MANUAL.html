@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manual de Usuario - Control de Inventario AZ</title>
+  <style>
+    :root {
+      --bg: #f7f4ef;
+      --card: #ffffff;
+      --text: #1f2937;
+      --sub: #526173;
+      --line: #dbe2ea;
+      --brand: #12496f;
+      --accent: #ff7a1a;
+      --ok: #15803d;
+      --warn: #d97706;
+      --radius: 22px;
+      --shadow: 0 14px 30px rgba(10, 28, 48, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 95% 0%, #ffd9b6 0%, rgba(255, 217, 182, 0) 35%),
+        radial-gradient(circle at 0% 18%, #d9ecff 0%, rgba(217, 236, 255, 0) 35%),
+        var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", "Trebuchet MS", Verdana, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255, 255, 255, 0.94);
+      border-bottom: 1px solid #e7edf5;
+      backdrop-filter: blur(6px);
+    }
+
+    .topbar-inner {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand img { width: 34px; height: 34px; object-fit: contain; border-radius: 8px; }
+    .brand strong { font-size: .95rem; letter-spacing: 0.02em; color: #153e5f; font-weight: 700; }
+
+    .nav { display: flex; gap: 8px; flex-wrap: wrap; }
+    .nav a {
+      text-decoration: none;
+      color: #29435f;
+      font-size: .83rem;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 7px 11px;
+      transition: background .2s ease;
+    }
+    .nav a:hover { background: #eef5ff; }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 18px 20px 70px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #fff9f5 0%, #f3f8ff 100%);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      padding: 44px 26px;
+    }
+
+    .hero .logo { width: 72px; height: 72px; object-fit: contain; margin-bottom: 10px; }
+    .hero .kicker { color: var(--brand); font-size: .82rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; }
+    .hero h1 {
+      margin: 8px 0 0;
+      font-size: clamp(1.9rem, 3.4vw, 3.2rem);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      color: var(--text);
+      font-weight: 700;
+    }
+    .hero p {
+      margin: 12px auto 0;
+      color: var(--sub);
+      max-width: 700px;
+      line-height: 1.55;
+      font-size: .98rem;
+    }
+
+    .section {
+      margin-top: 16px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 26px;
+    }
+
+    .section h2 {
+      margin: 0;
+      font-size: clamp(1.35rem, 2vw, 2.2rem);
+      letter-spacing: -0.02em;
+    }
+
+    .section p, .section li {
+      color: #1f2937;
+      line-height: 1.66;
+      font-size: .94rem;
+    }
+
+    .toc {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .toc a {
+      text-decoration: none;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      color: #1d1d1f;
+      font-size: .9rem;
+      background: #fbfbfd;
+    }
+
+    .toc a:hover { border-color: #9ec9ff; }
+
+    .step {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      margin-top: 12px;
+      background: #fbfbfd;
+    }
+
+    .step h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+      color: #0f172a;
+    }
+
+    .tip, .warn, .ok {
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-top: 10px;
+      font-size: .9rem;
+      line-height: 1.55;
+    }
+    .tip { background: #eff6ff; border: 1px solid #a8d5ff; color: #12496f; font-weight: 500; }
+    .warn { background: #fff7ed; border: 1px solid #fed7aa; color: #b45309; font-weight: 500; }
+    .ok { background: #f0fdf4; border: 1px solid #86efac; color: #166534; font-weight: 500; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: .9rem;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+
+    .capture-grid {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .capture-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff9f5;
+      overflow: hidden;
+    }
+
+    .capture-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      display: block;
+      background: #f3f4f6;
+    }
+
+    .capture-caption {
+      padding: 12px 14px;
+      border-top: 1px solid var(--line);
+      font-size: .86rem;
+      color: #1f2937;
+      background: #fff9f5;
+      font-weight: 500;
+    }
+
+    th, td { border-bottom: 1px solid var(--line); padding: 12px 14px; text-align: left; }
+    th { background: #f3f8ff; color: #1f2937; font-size: .86rem; font-weight: 700; }
+
+    footer {
+      margin-top: 16px;
+      text-align: center;
+      color: #86868b;
+      font-size: .8rem;
+    }
+
+    .whatsapp-float {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 50;
+      text-decoration: none;
+      background: #25d366;
+      color: #fff;
+      font-size: .88rem;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 11px 14px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, .22);
+      border: 1px solid rgba(0, 0, 0, .06);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .whatsapp-float:hover {
+      filter: brightness(1.05);
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 760px) {
+      .container, .topbar-inner { width: calc(100% - 24px); }
+      .toc, .capture-grid { grid-template-columns: 1fr; }
+      .nav { display: none; }
+      .section { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <img src="frontend/public/logo.png" alt="Logo AZ" />
+        <strong>Manual de Usuario</strong>
+      </div>
+      <nav class="nav">
+        <a href="#inicio">Inicio</a>
+        <a href="#modulos">Módulos</a>
+        <a href="#capturas">Capturas</a>
+        <a href="#flujo">Flujo recomendado</a>
+        <a href="#soporte">Soporte</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero" id="inicio">
+      <img class="logo" src="frontend/public/logo.png" alt="Logo Control de Inventario AZ" />
+      <span class="kicker">Control de Inventario AZ</span>
+      <h1>Manual de Usuario</h1>
+      <p>Guía rápida para operar el sistema en el día a día: inventario, ventas, caja, gastos, reportes y gestión de usuarios.</p>
+    </section>
+
+    <section class="section">
+      <h2>Contenido rápido</h2>
+      <div class="toc">
+        <a href="#acceso">1. Acceso al sistema</a>
+        <a href="#inventario">2. Inventario</a>
+        <a href="#ventas">3. Ventas</a>
+        <a href="#caja">4. Caja</a>
+        <a href="#gastos">5. Gastos</a>
+        <a href="#reportes">6. Reportes</a>
+        <a href="#usuarios">7. Usuarios</a>
+        <a href="#buenas">8. Buenas prácticas</a>
+        <a href="#capturas">9. Capturas del sistema</a>
+      </div>
+    </section>
+
+    <section class="section" id="acceso">
+      <h2>1. Acceso al sistema</h2>
+      <div class="step">
+        <h3>Iniciar sesión</h3>
+        <p>Escribe usuario y contraseña, luego presiona Iniciar sesión.</p>
+        <div class="tip">Si eres dueño del negocio, usa cuenta Administrador para acceso completo.</div>
+      </div>
+      <div class="step">
+        <h3>Crear cuenta</h3>
+        <p>Desde Crear cuenta puedes registrar usuarios con rol Administrador o Empleado.</p>
+      </div>
+    </section>
+
+    <section class="section" id="modulos">
+      <h2>2. Módulos del sistema</h2>
+      <table>
+        <tr><th>Módulo</th><th>Para qué sirve</th></tr>
+        <tr><td>Dashboard</td><td>Resumen general de ventas, utilidad y alertas.</td></tr>
+        <tr><td>Inventario</td><td>Alta, edición, búsqueda y control de stock de productos.</td></tr>
+        <tr><td>Ventas</td><td>Cobro en efectivo o tarjeta, cálculo de cambio e impresión.</td></tr>
+        <tr><td>Caja</td><td>Apertura, cierre e historial diario de caja.</td></tr>
+        <tr><td>Gastos</td><td>Registro de egresos para control real de caja.</td></tr>
+        <tr><td>Reportes</td><td>Análisis y descarga de reportes en PDF.</td></tr>
+        <tr><td>Usuarios</td><td>Gestión de cuentas, roles y control administrativo.</td></tr>
+      </table>
+    </section>
+
+    <section class="section" id="inventario">
+      <h2>3. Inventario</h2>
+      <div class="step"><h3>Agregar producto</h3><p>Haz clic en Nuevo Producto, llena datos principales y guarda.</p></div>
+      <div class="step"><h3>Editar o eliminar</h3><p>Usa los botones de acciones en cada fila de producto.</p></div>
+      <div class="step"><h3>Código QR</h3><p>Puedes generar y descargar QR para identificar productos.</p></div>
+    </section>
+
+    <section class="section" id="ventas">
+      <h2>4. Ventas</h2>
+      <div class="step"><h3>Flujo básico</h3><p>Busca producto, agrégalo al carrito, define método de pago y cobra.</p></div>
+      <div class="step"><h3>Efectivo</h3><p>Captura monto recibido y el sistema calcula el cambio automáticamente.</p></div>
+      <div class="step"><h3>Tarjeta</h3><p>No requiere cambio; solo confirmar cobro e imprimir ticket.</p></div>
+      <div class="ok">La venta queda registrada al momento y actualiza inventario automáticamente.</div>
+    </section>
+
+    <section class="section" id="caja">
+      <h2>5. Caja y gastos</h2>
+      <div class="step"><h3>Abrir caja</h3><p>Registra monto de apertura al iniciar turno.</p></div>
+      <div class="step"><h3>Registrar gastos</h3><p>En Gastos agrega descripción, monto, categoría y fecha.</p></div>
+      <div class="step"><h3>Cerrar caja</h3><p>Finaliza turno y revisa historial para auditoría.</p></div>
+      <div class="warn">Si hay inconsistencias, revisa primero ventas canceladas o gastos mal capturados.</div>
+    </section>
+
+    <section class="section" id="reportes">
+      <h2>6. Reportes</h2>
+      <p>Selecciona rango de fechas y genera reporte. Puedes descargar PDFs de utilidad, ventas e inventario.</p>
+      <div class="tip">Usa reportes semanales para decisiones de compra y fijación de precios.</div>
+    </section>
+
+    <section class="section" id="usuarios">
+      <h2>7. Usuarios y administración</h2>
+      <p>Desde Usuarios puedes editar cuentas, eliminar usuarios y ejecutar acciones administrativas como reset de tienda (solo admin).</p>
+      <table>
+        <tr><th>Rol</th><th>Permiso recomendado</th></tr>
+        <tr><td>Administrador</td><td>Control total del sistema</td></tr>
+        <tr><td>Empleado</td><td>Operación diaria de ventas y consulta básica</td></tr>
+      </table>
+    </section>
+
+    <section class="section" id="flujo">
+      <h2>8. Flujo recomendado de trabajo</h2>
+      <ol>
+        <li>Abrir caja al iniciar turno.</li>
+        <li>Registrar ventas durante el día.</li>
+        <li>Capturar gastos conforme ocurren.</li>
+        <li>Consultar dashboard para control rápido.</li>
+        <li>Cerrar caja al finalizar turno.</li>
+        <li>Revisar reportes al final del día/semana.</li>
+      </ol>
+    </section>
+
+    <section class="section" id="buenas">
+      <h2>9. Buenas prácticas</h2>
+      <ul>
+        <li>Realiza respaldo frecuente de datos.</li>
+        <li>No compartas cuentas de administrador.</li>
+        <li>Mantén actualizada la información de productos y precios.</li>
+        <li>Capacita al personal en el flujo de venta y caja.</li>
+      </ul>
+      <div class="ok">Con estas prácticas, el sistema se mantiene estable y listo para operación diaria.</div>
+    </section>
+
+    <section class="section" id="capturas">
+      <h2>10. Capturas del sistema</h2>
+      <p>Vista rápida de pantallas reales para capacitación y referencia del equipo.</p>
+      <div class="capture-grid">
+        <article class="capture-card">
+          <img src="capturas/Captura%20de%20pantalla%202026-04-02%20093209.png" alt="Captura del sistema 1" />
+          <div class="capture-caption">Pantalla general del sistema.</div>
+        </article>
+        <article class="capture-card">
+          <img src="capturas/Captura%20de%20pantalla%202026-04-02%20093241.png" alt="Captura del sistema 2" />
+          <div class="capture-caption">Operación y navegación principal.</div>
+        </article>
+        <article class="capture-card">
+          <img src="capturas/Captura%20de%20pantalla%202026-04-02%20093618.png" alt="Captura del sistema 3" />
+          <div class="capture-caption">Módulos para gestión de inventario.</div>
+        </article>
+        <article class="capture-card">
+          <img src="capturas/Captura%20de%20pantalla%202026-04-02%20093623.png" alt="Captura del sistema 4" />
+          <div class="capture-caption">Flujo de ventas y registro.</div>
+        </article>
+        <article class="capture-card">
+          <img src="capturas/Captura%20de%20pantalla%202026-04-02%20093743.png" alt="Captura del sistema 5" />
+          <div class="capture-caption">Consulta de caja y movimientos.</div>
+        </article>
+        <article class="capture-card">
+          <img src="capturas/Captura%20de%20pantalla%202026-04-02%20093755.png" alt="Captura del sistema 6" />
+          <div class="capture-caption">Registro y control de gastos.</div>
+        </article>
+        <article class="capture-card">
+          <img src="capturas/Captura%20de%20pantalla%202026-04-02%20093811.png" alt="Captura del sistema 7" />
+          <div class="capture-caption">Panel y métricas de operación.</div>
+        </article>
+        <article class="capture-card">
+          <img src="capturas/Captura%20de%20pantalla%202026-04-02%20093821.png" alt="Captura del sistema 8" />
+          <div class="capture-caption">Vista de reportes y resultados.</div>
+        </article>
+        <article class="capture-card">
+          <img src="capturas/Captura%20de%20pantalla%202026-04-02%20093840.png" alt="Captura del sistema 9" />
+          <div class="capture-caption">Análisis de datos para decisiones.</div>
+        </article>
+        <article class="capture-card">
+          <img src="capturas/Captura%20de%20pantalla%202026-04-02%20093847.png" alt="Captura del sistema 10" />
+          <div class="capture-caption">Detalle operativo del módulo.</div>
+        </article>
+        <article class="capture-card">
+          <img src="capturas/Captura%20de%20pantalla%202026-04-02%20093901.png" alt="Captura del sistema 11" />
+          <div class="capture-caption">Gestión de usuarios y permisos.</div>
+        </article>
+        <article class="capture-card">
+          <img src="capturas/Captura%20de%20pantalla%202026-04-02%20093919.png" alt="Captura del sistema 12" />
+          <div class="capture-caption">Control administrativo avanzado.</div>
+        </article>
+        <article class="capture-card">
+          <img src="capturas/Captura%20de%20pantalla%202026-04-02%20093927.png" alt="Captura del sistema 13" />
+          <div class="capture-caption">Resumen final de operación diaria.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="soporte">
+      <h2>11. Soporte</h2>
+      <p>Para soporte técnico, instalación o actualización, contacta al proveedor del sistema.</p>
+      <p><strong>WhatsApp:</strong> 6471200790</p>
+    </section>
+
+    <footer>Control de Inventario AZ • Manual de Usuario • 2026</footer>
+  </main>
+
+  <a class="whatsapp-float" href="https://wa.me/6471200790" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp">
+    <span>💬</span>
+    <span>WhatsApp</span>
+  </a>
+</body>
+</html>

@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Control de Inventario AZ</title>
+  <meta name="description" content="Sistema de inventario y ventas con diseño profesional, control de caja y reportes para negocios reales." />
+  <style>
+    :root {
+      --bg: #f7f4ef;
+      --ink: #1f2937;
+      --muted: #526173;
+      --brand: #12496f;
+      --accent: #ff7a1a;
+      --line: #dbe2ea;
+      --card: #ffffff;
+      --ok: #15803d;
+      --soft: #fff6eb;
+      --shadow: 0 14px 30px rgba(10, 28, 48, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Segoe UI", "Trebuchet MS", Verdana, sans-serif;
+      background:
+        radial-gradient(circle at 95% 0%, #ffd9b6 0%, rgba(255, 217, 182, 0) 35%),
+        radial-gradient(circle at 0% 18%, #d9ecff 0%, rgba(217, 236, 255, 0) 35%),
+        var(--bg);
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(255, 255, 255, 0.94);
+      border-bottom: 1px solid #e7edf5;
+      backdrop-filter: blur(6px);
+    }
+
+    .topbar-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .brand img {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      object-fit: contain;
+      background: #f3f8ff;
+      padding: 3px;
+    }
+
+    .brand strong {
+      font-size: 0.94rem;
+      letter-spacing: 0.02em;
+      color: #153e5f;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: #29435f;
+      font-size: 0.83rem;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 7px 11px;
+      transition: background .2s ease;
+    }
+
+    .nav a:hover { background: #eef5ff; }
+
+    .container {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 18px 18px 76px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .hero-copy,
+    .hero-side {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 26px;
+    }
+
+    .hero-copy {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-copy::before {
+      content: "";
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      right: -90px;
+      top: -100px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #ffe3c5, rgba(255, 227, 197, 0));
+      pointer-events: none;
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      background: #eef5ff;
+      color: var(--brand);
+      padding: 7px 12px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .hero-copy h1 {
+      margin: 14px 0 0;
+      font-size: clamp(2rem, 3.8vw, 3.4rem);
+      line-height: 1.06;
+      letter-spacing: -0.01em;
+      max-width: 740px;
+    }
+
+    .hero-copy p {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 1.45vw, 1.15rem);
+      line-height: 1.58;
+      max-width: 690px;
+    }
+
+    .hero-actions {
+      margin-top: 18px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      text-decoration: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, .1);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ff8a2a, #ff6a00);
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: #fff;
+      color: #18486f;
+      border: 1px solid #cdd8e6;
+    }
+
+    .hero-stat {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #f9fbff;
+      padding: 13px;
+      margin-bottom: 10px;
+    }
+
+    .hero-stat:last-child { margin-bottom: 0; }
+
+    .hero-stat h3 {
+      margin: 0;
+      color: #12496f;
+      font-size: 1rem;
+    }
+
+    .hero-stat p {
+      margin: 6px 0 0;
+      color: #4b5f74;
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .section {
+      margin-top: 16px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      animation: rise .45s ease both;
+    }
+
+    .section h2 {
+      margin: 0;
+      text-align: center;
+      font-size: clamp(1.6rem, 2.4vw, 2.6rem);
+      color: #153e5f;
+    }
+
+    .lead {
+      margin: 10px auto 0;
+      max-width: 760px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.98rem;
+      line-height: 1.56;
+    }
+
+    .features {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .feature {
+      border: 1px solid #dae3f0;
+      border-radius: 16px;
+      padding: 16px;
+      background: linear-gradient(180deg, #ffffff, #f8fbff);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature::before {
+      content: "";
+      position: absolute;
+      inset: auto -40px -70px auto;
+      width: 130px;
+      height: 130px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 20% 20%, #ffe7cc, rgba(255, 231, 204, 0));
+      pointer-events: none;
+    }
+
+    .feature h3 {
+      margin: 0;
+      font-size: 1.03rem;
+      color: #114366;
+    }
+
+    .feature p {
+      margin: 8px 0 0;
+      color: #54667a;
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .gallery {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .shot {
+      grid-column: span 6;
+      border: 1px solid #dae3f0;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #fff;
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease;
+      position: relative;
+    }
+
+    .shot:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(15, 23, 42, .12);
+    }
+
+    .shot::after {
+      content: "Ver detalle";
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(17, 51, 85, .78);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 4px 9px;
+      letter-spacing: .02em;
+    }
+
+    .shot img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      display: block;
+      background: #f2f6fc;
+    }
+
+    .shot-body {
+      padding: 12px;
+      border-top: 1px solid #edf2f8;
+    }
+
+    .shot-body h4 {
+      margin: 0;
+      color: #123f61;
+      font-size: 0.96rem;
+    }
+
+    .shot-body p {
+      margin: 6px 0 0;
+      color: #5a6b7f;
+      font-size: 0.86rem;
+      line-height: 1.44;
+    }
+
+    .plan-wrap {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: 1fr .92fr;
+      gap: 12px;
+    }
+
+    .plan,
+    .includes {
+      border: 1px solid #d7e1ee;
+      border-radius: 16px;
+      padding: 18px;
+      background: #fff;
+    }
+
+    .plan {
+      background: linear-gradient(180deg, #fff, #fff8f0);
+    }
+
+    .price {
+      margin: 10px 0 4px;
+      color: #ff6a00;
+      font-size: 2.5rem;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .sub {
+      margin: 0;
+      color: #5a6d82;
+      font-size: 0.9rem;
+    }
+
+    .plan ul,
+    .includes ul {
+      margin: 14px 0 0;
+      padding-left: 18px;
+      line-height: 1.62;
+      color: #27374a;
+      font-size: 0.92rem;
+    }
+
+    .bank {
+      margin-top: 14px;
+      border: 1px solid #ffd8b4;
+      border-radius: 12px;
+      background: var(--soft);
+      padding: 12px;
+    }
+
+    .bank h4 {
+      margin: 0 0 8px;
+      color: #a34a05;
+      font-size: .92rem;
+    }
+
+    .bank p {
+      margin: 4px 0;
+      color: #5c4a3b;
+      font-size: .86rem;
+    }
+
+    .account-row {
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .account {
+      border: 1px dashed #ffb77f;
+      border-radius: 10px;
+      padding: 8px 10px;
+      background: #fff;
+      color: #7c2d12;
+      font-size: 1rem;
+      letter-spacing: .04em;
+      font-weight: 800;
+    }
+
+    .copy-btn {
+      border: 1px solid #e2b287;
+      border-radius: 999px;
+      background: #fff;
+      color: #8a3d04;
+      padding: 7px 12px;
+      font-size: .82rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .copy-btn:hover { background: #fff8f2; }
+
+    .pay-cta { margin-top: 14px; }
+
+    .pay-cta .btn {
+      width: 100%;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: .9rem;
+    }
+
+    .note {
+      margin-top: 10px;
+      color: #5a6d82;
+      font-size: .83rem;
+      line-height: 1.5;
+    }
+
+    .ok {
+      color: var(--ok);
+      font-weight: 700;
+    }
+
+    .quote {
+      margin-top: 14px;
+      border-left: 3px solid #6ea8e8;
+      background: #f4f9ff;
+      border-radius: 8px;
+      padding: 10px;
+      color: #36516c;
+      font-size: .9rem;
+      font-style: italic;
+    }
+
+    .bottom-cta {
+      margin-top: 16px;
+      border: 1px solid #d9e2ee;
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 85% 10%, #ffe5cc 0%, rgba(255, 229, 204, 0) 28%),
+        linear-gradient(180deg, #ffffff, #f7fbff);
+      text-align: center;
+      padding: 30px 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .bottom-cta h2 {
+      margin: 0;
+      color: #173f60;
+      font-size: clamp(1.7rem, 2.8vw, 2.7rem);
+    }
+
+    .bottom-cta p {
+      margin: 10px auto 0;
+      max-width: 700px;
+      color: #5a6b7f;
+      font-size: .96rem;
+      line-height: 1.58;
+    }
+
+    .bottom-cta .btn {
+      margin-top: 15px;
+      border-radius: 12px;
+      padding: 12px 20px;
+    }
+
+    footer {
+      margin-top: 14px;
+      text-align: center;
+      color: #708196;
+      font-size: .8rem;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(9, 20, 33, .86);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 60;
+      padding: 18px;
+    }
+
+    .modal.open { display: flex; }
+
+    .modal-box {
+      width: min(1180px, 100%);
+      max-height: 95vh;
+      overflow: auto;
+      background: #0d2237;
+      border-radius: 14px;
+      padding: 10px;
+      position: relative;
+    }
+
+    .modal-box img {
+      width: 100%;
+      border-radius: 10px;
+      display: block;
+    }
+
+    .close {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 34px;
+      height: 34px;
+      border: none;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, .55);
+      color: #fff;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 990px) {
+      .hero { grid-template-columns: 1fr; }
+      .features { grid-template-columns: 1fr 1fr; }
+      .plan-wrap { grid-template-columns: 1fr; }
+      .shot { grid-column: span 12; }
+      .shot img { height: 235px; }
+    }
+
+    @media (max-width: 660px) {
+      .topbar-inner, .container { width: calc(100% - 24px); }
+      .hero-copy, .hero-side, .section { padding: 18px; }
+      .features { grid-template-columns: 1fr; }
+      .hero-actions { flex-direction: column; }
+      .hero-actions .btn { width: 100%; }
+      .nav { display: none; }
+      .shot img { height: 205px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <img src="frontend/public/logo.png" alt="Logo Control de Inventario AZ" />
+        <strong>Control de Inventario AZ</strong>
+      </div>
+      <nav class="nav">
+        <a href="#beneficios">Beneficios</a>
+        <a href="#capturas">Pantallas</a>
+        <a href="#plan">Plan</a>
+        <a href="https://wa.me/6471200790" target="_blank" rel="noopener noreferrer">Contacto</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <article class="hero-copy">
+        <span class="kicker">Sistema listo para vender</span>
+        <h1>Haz que tu negocio se vea profesional desde el primer dia</h1>
+        <p>
+          Control de Inventario AZ esta pensado para dueños reales: cobro agil, inventario al dia,
+          reportes claros y control de caja sin enredos. Tu equipo aprende rapido y tu negocio vende con orden.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="https://wa.me/6471200790?text=Hola%2C%20quiero%20instalar%20Control%20de%20Inventario%20AZ%20en%20mi%20negocio" target="_blank" rel="noopener noreferrer">Instalar ahora por WhatsApp</a>
+          <a class="btn btn-secondary" href="#capturas">Ver pantallas reales</a>
+        </div>
+      </article>
+      <aside class="hero-side">
+        <div class="hero-stat">
+          <h3>Operacion mas rapida</h3>
+          <p>Cobro en efectivo o tarjeta con ticket inmediato y menos filas en caja.</p>
+        </div>
+        <div class="hero-stat">
+          <h3>Control diario del dinero</h3>
+          <p>Apertura y cierre de caja con historial para saber exactamente cuanto entro y cuanto salio.</p>
+        </div>
+        <div class="hero-stat">
+          <h3>Listo para crecer</h3>
+          <p>Gestion de usuarios, roles y reportes para tomar decisiones con datos reales.</p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section" id="beneficios">
+      <h2>Por que a tus clientes les va a gustar</h2>
+      <p class="lead">Menos texto tecnico, mas valor para negocio: rapidez, control y confianza en cada venta.</p>
+      <div class="features">
+        <article class="feature">
+          <h3>Inventario claro</h3>
+          <p>Alta de productos, edicion, stock y busqueda en una sola pantalla facil de entender.</p>
+        </article>
+        <article class="feature">
+          <h3>Venta sin friccion</h3>
+          <p>Carrito practico, cambio automatico y ticket para atender rapido en horas pico.</p>
+        </article>
+        <article class="feature">
+          <h3>Caja bajo control</h3>
+          <p>Registro de gastos y movimientos del dia para evitar diferencias al cierre.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="capturas">
+      <h2>Pantallas reales del sistema</h2>
+      <p class="lead">Esto es lo que vera tu cliente al trabajar todos los dias. Haz clic para ampliar.</p>
+      <div class="gallery">
+        <article class="shot" data-full="capturas/Captura de pantalla 2026-04-02 093209.png"><img src="capturas/Captura de pantalla 2026-04-02 093209.png" alt="Login" loading="lazy" /><div class="shot-body"><h4>Inicio de sesion</h4><p>Acceso rapido para empezar el turno.</p></div></article>
+        <article class="shot" data-full="capturas/Captura de pantalla 2026-04-02 093241.png"><img src="capturas/Captura de pantalla 2026-04-02 093241.png" alt="Registro" loading="lazy" /><div class="shot-body"><h4>Crear cuenta</h4><p>Usuarios por rol: admin o empleado.</p></div></article>
+        <article class="shot" data-full="capturas/Captura de pantalla 2026-04-02 093618.png"><img src="capturas/Captura de pantalla 2026-04-02 093618.png" alt="Dashboard" loading="lazy" /><div class="shot-body"><h4>Dashboard</h4><p>Resumen diario de ventas y utilidad.</p></div></article>
+        <article class="shot" data-full="capturas/Captura de pantalla 2026-04-02 093623.png"><img src="capturas/Captura de pantalla 2026-04-02 093623.png" alt="Inventario" loading="lazy" /><div class="shot-body"><h4>Inventario</h4><p>Stock, precios y productos en orden.</p></div></article>
+        <article class="shot" data-full="capturas/Captura de pantalla 2026-04-02 093743.png"><img src="capturas/Captura de pantalla 2026-04-02 093743.png" alt="QR" loading="lazy" /><div class="shot-body"><h4>Codigo QR</h4><p>Etiquetas listas para operacion rapida.</p></div></article>
+        <article class="shot" data-full="capturas/Captura de pantalla 2026-04-02 093755.png"><img src="capturas/Captura de pantalla 2026-04-02 093755.png" alt="Editar producto" loading="lazy" /><div class="shot-body"><h4>Edicion avanzada</h4><p>Actualiza productos en segundos.</p></div></article>
+        <article class="shot" data-full="capturas/Captura de pantalla 2026-04-02 093811.png"><img src="capturas/Captura de pantalla 2026-04-02 093811.png" alt="Ventas" loading="lazy" /><div class="shot-body"><h4>Punto de venta</h4><p>Cobro intuitivo para vender sin pausas.</p></div></article>
+        <article class="shot" data-full="capturas/Captura de pantalla 2026-04-02 093821.png"><img src="capturas/Captura de pantalla 2026-04-02 093821.png" alt="Notificaciones" loading="lazy" /><div class="shot-body"><h4>Confirmaciones</h4><p>Mensajes claros que evitan errores.</p></div></article>
+        <article class="shot" data-full="capturas/Captura de pantalla 2026-04-02 093840.png"><img src="capturas/Captura de pantalla 2026-04-02 093840.png" alt="Caja" loading="lazy" /><div class="shot-body"><h4>Modulo Caja</h4><p>Entradas y salidas del dinero real.</p></div></article>
+        <article class="shot" data-full="capturas/Captura de pantalla 2026-04-02 093847.png"><img src="capturas/Captura de pantalla 2026-04-02 093847.png" alt="Historial" loading="lazy" /><div class="shot-body"><h4>Historial de caja</h4><p>Auditoria por usuario y por turno.</p></div></article>
+        <article class="shot" data-full="capturas/Captura de pantalla 2026-04-02 093901.png"><img src="capturas/Captura de pantalla 2026-04-02 093901.png" alt="Gastos" loading="lazy" /><div class="shot-body"><h4>Registro de gastos</h4><p>Control de egresos al momento.</p></div></article>
+        <article class="shot" data-full="capturas/Captura de pantalla 2026-04-02 093919.png"><img src="capturas/Captura de pantalla 2026-04-02 093919.png" alt="Reportes" loading="lazy" /><div class="shot-body"><h4>Reportes</h4><p>Resultados listos para revisar y decidir.</p></div></article>
+        <article class="shot" data-full="capturas/Captura de pantalla 2026-04-02 093927.png"><img src="capturas/Captura de pantalla 2026-04-02 093927.png" alt="Usuarios" loading="lazy" /><div class="shot-body"><h4>Usuarios</h4><p>Permisos y control administrativo.</p></div></article>
+      </div>
+    </section>
+
+    <section class="section" id="plan">
+      <h2>Plan comercial directo y facil de cerrar</h2>
+      <p class="lead">Tu cliente entiende rapido: paga, manda comprobante y recibe instalador listo para usar.</p>
+      <div class="plan-wrap">
+        <article class="plan">
+          <h3>Control de Inventario AZ Completo</h3>
+          <p class="price">$999 MXN</p>
+          <p class="sub">Pago único inicial</p>
+          <ul>
+            <li>Instalación en una computadora</li>
+            <li>Capacitación de arranque</li>
+            <li>Manual de usuario + guía de impresora</li>
+            <li>Soporte inicial</li>
+          </ul>
+
+          <div class="bank">
+            <h4>Pago por transferencia / depósito</h4>
+            <p><strong>Banco:</strong> BBVA</p>
+            <p><strong>Cuenta o tarjeta:</strong></p>
+            <div class="account-row">
+              <span class="account" id="bbvaAccount">4152 3141 2512 6378</span>
+              <button class="copy-btn" id="copyAccountBtn" type="button">Copiar cuenta</button>
+            </div>
+          </div>
+
+          <div class="pay-cta">
+            <a class="btn btn-primary" href="https://wa.me/6471200790?text=Hola%2C%20ya%20realice%20la%20transferencia%20del%20sistema%20y%20adjunto%20mi%20comprobante%20para%20recibir%20el%20enlace%20de%20descarga." target="_blank" rel="noopener noreferrer">Ya pagué, enviar comprobante</a>
+          </div>
+          <p class="note">Después del comprobante, compartes el enlace de descarga del instalador a tu cliente.</p>
+        </article>
+
+        <article class="includes">
+          <h3>Incluye</h3>
+          <ul>
+            <li class="ok">Aplicación de escritorio .exe</li>
+            <li class="ok">Inventario, ventas, caja, gastos y reportes</li>
+            <li class="ok">Impresión de tickets</li>
+            <li class="ok">Control por roles (admin y empleado)</li>
+            <li class="ok">Documentación de uso lista para cliente final</li>
+          </ul>
+          <div class="quote">"Control claro, venta mas rapida y caja sin sorpresas al final del dia."</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="bottom-cta">
+      <h2>Llevate este sistema a tu negocio esta semana</h2>
+      <p>Te ayudamos a instalarlo, dejarlo funcionando y capacitar a tu equipo para que venda con confianza desde el primer dia.</p>
+      <a class="btn btn-primary" href="https://wa.me/6471200790?text=Hola%2C%20quiero%20instalar%20Control%20de%20Inventario%20AZ%20en%20mi%20negocio" target="_blank" rel="noopener noreferrer">Contactar por WhatsApp</a>
+    </section>
+
+    <footer>Control de Inventario AZ • Presentación Comercial 2026</footer>
+  </main>
+
+  <div class="modal" id="imgModal" aria-hidden="true">
+    <div class="modal-box">
+      <button class="close" id="closeModal" aria-label="Cerrar">×</button>
+      <img id="modalImg" src="" alt="Vista ampliada" />
+    </div>
+  </div>
+
+  <script>
+    const cards = document.querySelectorAll('.shot');
+    const modal = document.getElementById('imgModal');
+    const modalImg = document.getElementById('modalImg');
+    const closeModal = document.getElementById('closeModal');
+
+    cards.forEach((card) => {
+      card.addEventListener('click', () => {
+        const src = card.getAttribute('data-full');
+        if (!src) return;
+        modalImg.src = src;
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+      });
+    });
+
+    function closeViewer() {
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      modalImg.src = '';
+    }
+
+    closeModal.addEventListener('click', closeViewer);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeViewer();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('open')) closeViewer();
+    });
+
+    const copyBtn = document.getElementById('copyAccountBtn');
+    const account = document.getElementById('bbvaAccount');
+
+    if (copyBtn && account) {
+      copyBtn.addEventListener('click', async () => {
+        const value = account.textContent.replace(/\s+/g, '');
+        try {
+          await navigator.clipboard.writeText(value);
+          copyBtn.textContent = 'Copiado';
+          setTimeout(() => { copyBtn.textContent = 'Copiar cuenta'; }, 1200);
+        } catch (err) {
+          copyBtn.textContent = 'No se pudo';
+          setTimeout(() => { copyBtn.textContent = 'Copiar cuenta'; }, 1200);
+        }
+      });
+    }
+  </script>
+</body>
+</html>

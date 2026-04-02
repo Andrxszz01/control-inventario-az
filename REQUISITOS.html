@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Requisitos del Sistema - Control de Inventario AZ</title>
+  <style>
+    :root {
+      --bg: #f7f4ef;
+      --card: #ffffff;
+      --text: #1f2937;
+      --sub: #526173;
+      --line: #dbe2ea;
+      --brand: #12496f;
+      --accent: #ff7a1a;
+      --ok: #15803d;
+      --warn: #d97706;
+      --radius: 22px;
+      --shadow: 0 14px 30px rgba(10, 28, 48, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 95% 0%, #ffd9b6 0%, rgba(255, 217, 182, 0) 35%),
+        radial-gradient(circle at 0% 18%, #d9ecff 0%, rgba(217, 236, 255, 0) 35%),
+        var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", "Trebuchet MS", Verdana, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255, 255, 255, 0.94);
+      border-bottom: 1px solid #e7edf5;
+      backdrop-filter: blur(6px);
+    }
+
+    .topbar-inner {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand img { width: 34px; height: 34px; object-fit: contain; border-radius: 8px; }
+    .brand strong { font-size: .95rem; letter-spacing: 0.02em; color: #153e5f; font-weight: 700; }
+
+    .nav { display: flex; gap: 8px; flex-wrap: wrap; }
+    .nav a {
+      text-decoration: none;
+      color: #29435f;
+      font-size: .83rem;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 7px 11px;
+      transition: background .2s ease;
+    }
+    .nav a:hover { background: #eef5ff; }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 18px 20px 70px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #fff9f5 0%, #f3f8ff 100%);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      padding: 44px 26px;
+    }
+
+    .hero .logo { width: 72px; height: 72px; object-fit: contain; margin-bottom: 10px; }
+    .hero .kicker { color: var(--brand); font-size: .82rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; }
+    .hero h1 {
+      margin: 8px 0 0;
+      font-size: clamp(1.9rem, 3.4vw, 3.2rem);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      color: var(--text);
+      font-weight: 700;
+    }
+    .hero p {
+      margin: 12px auto 0;
+      color: var(--sub);
+      max-width: 700px;
+      line-height: 1.55;
+      font-size: .98rem;
+    }
+
+    .section {
+      margin-top: 16px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 26px;
+    }
+
+    .section h2 {
+      margin: 0;
+      font-size: clamp(1.35rem, 2vw, 2.2rem);
+      letter-spacing: -0.02em;
+    }
+
+    .section p, .section li {
+      color: #1f2937;
+      line-height: 1.66;
+      font-size: .94rem;
+    }
+
+    .toc {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .toc a {
+      text-decoration: none;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      color: #1f2937;
+      font-size: .9rem;
+      background: #fff9f5;
+      font-weight: 500;
+      transition: all .2s ease;
+    }
+    .toc a:hover { border-color: #ff7a1a; background: #ffe8dc; color: var(--brand); }
+
+    .card-grid {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .mini-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      background: #fff9f5;
+    }
+
+    .mini-card h3 { margin: 0 0 8px; font-size: 1rem; font-weight: 700; color: var(--brand); }
+    .mini-card ul { margin: 0; padding-left: 18px; color: #1f2937; }
+
+    .tip, .warn, .ok {
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-top: 10px;
+      font-size: .9rem;
+      line-height: 1.55;
+    }
+    .tip { background: #eff6ff; border: 1px solid #a8d5ff; color: #12496f; font-weight: 500; }
+    .warn { background: #fff7ed; border: 1px solid #fed7aa; color: #b45309; font-weight: 500; }
+    .ok { background: #f0fdf4; border: 1px solid #86efac; color: #166534; font-weight: 500; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: .9rem;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+
+    th, td { border-bottom: 1px solid var(--line); padding: 12px 14px; text-align: left; }
+    th { background: #f3f8ff; color: #1f2937; font-size: .86rem; font-weight: 700; }
+
+    footer {
+      margin-top: 16px;
+      text-align: center;
+      color: #86868b;
+      font-size: .8rem;
+    }
+
+    .whatsapp-float {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 50;
+      text-decoration: none;
+      background: #25d366;
+      color: #fff;
+      font-size: .88rem;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 11px 14px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, .22);
+      border: 1px solid rgba(0, 0, 0, .06);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .whatsapp-float:hover {
+      filter: brightness(1.05);
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 760px) {
+      .container, .topbar-inner { width: calc(100% - 24px); }
+      .toc, .card-grid { grid-template-columns: 1fr; }
+      .nav { display: none; }
+      .section { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <img src="frontend/public/logo.png" alt="Logo AZ" />
+        <strong>Requisitos del Sistema</strong>
+      </div>
+      <nav class="nav">
+        <a href="#hardware">Hardware</a>
+        <a href="#software">Software</a>
+        <a href="#instalacion">Instalación</a>
+        <a href="#recomendaciones">Recomendaciones</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <img class="logo" src="frontend/public/logo.png" alt="Logo Control de Inventario AZ" />
+      <span class="kicker">Control de Inventario AZ</span>
+      <h1>Requisitos del Sistema</h1>
+      <p>Especificaciones mínimas y recomendadas para que el sistema funcione correctamente en la computadora del cliente.</p>
+    </section>
+
+    <section class="section">
+      <h2>Resumen rápido</h2>
+      <div class="toc">
+        <a href="#hardware">1. Requisitos de hardware</a>
+        <a href="#sistema">2. Sistema operativo</a>
+        <a href="#software">3. Software necesario</a>
+        <a href="#impresora">4. Impresora (opcional)</a>
+        <a href="#internet">5. Internet y red</a>
+        <a href="#instalacion">6. Instalación</a>
+        <a href="#espacio">7. Espacio en disco</a>
+        <a href="#recomendaciones">8. Recomendaciones</a>
+      </div>
+    </section>
+
+    <section class="section" id="hardware">
+      <h2>1. Requisitos de hardware</h2>
+      <div class="card-grid">
+        <article class="mini-card">
+          <h3>Mínimos</h3>
+          <ul>
+            <li>Procesador: Intel Core i3 o equivalente</li>
+            <li>RAM: 4 GB</li>
+            <li>Disco libre: 500 MB</li>
+            <li>Pantalla: 1024 x 768</li>
+          </ul>
+        </article>
+        <article class="mini-card">
+          <h3>Recomendados</h3>
+          <ul>
+            <li>Procesador: Intel i5 / Ryzen 5 o superior</li>
+            <li>RAM: 8 GB o más</li>
+            <li>Disco: SSD con al menos 2 GB libres</li>
+            <li>Pantalla: 1280 x 720 o superior</li>
+          </ul>
+        </article>
+      </div>
+      <div class="tip">Entre más productos y ventas registre el negocio, mayor rendimiento tendrá con 8 GB de RAM y disco SSD.</div>
+    </section>
+
+    <section class="section" id="sistema">
+      <h2>2. Sistema operativo compatible</h2>
+      <table>
+        <tr><th>Sistema</th><th>Versión</th><th>Compatibilidad</th></tr>
+        <tr><td>Windows 10</td><td>64 bits</td><td>Compatible</td></tr>
+        <tr><td>Windows 11</td><td>64 bits</td><td>Compatible</td></tr>
+        <tr><td>Windows 7 / 8</td><td>32 bits o antiguas</td><td>No recomendado</td></tr>
+      </table>
+      <div class="warn">El sistema está optimizado para Windows 10/11 de 64 bits.</div>
+    </section>
+
+    <section class="section" id="software">
+      <h2>3. Software necesario</h2>
+      <p>El instalador incluye lo necesario para operar. El cliente no debe instalar Node.js ni base de datos manualmente.</p>
+      <table>
+        <tr><th>Elemento</th><th>Necesario</th><th>Incluido</th></tr>
+        <tr><td>Aplicación de escritorio</td><td>Sí</td><td>Sí (.exe)</td></tr>
+        <tr><td>Driver de impresora</td><td>Solo si imprime ticket</td><td>No</td></tr>
+        <tr><td>Navegador web</td><td>Para manuales HTML</td><td>Generalmente sí</td></tr>
+      </table>
+      <div class="ok">El sistema puede funcionar sin internet para ventas, caja, inventario y reportes locales.</div>
+    </section>
+
+    <section class="section" id="impresora">
+      <h2>4. Impresora (opcional)</h2>
+      <p>Para emitir tickets, se recomienda impresora térmica y driver Generic / Text Only o driver oficial del fabricante.</p>
+      <ul>
+        <li>Mínimo: impresora térmica 58 mm.</li>
+        <li>Recomendado: impresora térmica 80 mm con driver oficial.</li>
+      </ul>
+    </section>
+
+    <section class="section" id="internet">
+      <h2>5. Internet y red</h2>
+      <table>
+        <tr><th>Función</th><th>¿Requiere internet?</th></tr>
+        <tr><td>Ventas, caja, inventario y reportes</td><td>No</td></tr>
+        <tr><td>Respaldo en la nube (si se configura)</td><td>Sí</td></tr>
+        <tr><td>Soporte remoto / actualizaciones</td><td>Recomendado</td></tr>
+      </table>
+    </section>
+
+    <section class="section" id="instalacion">
+      <h2>6. Instalación del sistema</h2>
+      <ol>
+        <li>Ejecutar el archivo instalador .exe.</li>
+        <li>Seguir pasos del asistente de instalación.</li>
+        <li>Abrir el sistema y crear cuenta inicial.</li>
+        <li>Configurar impresora si se usará ticket.</li>
+      </ol>
+      <div class="tip">Si Windows muestra advertencia de seguridad, usar la opción Ejecutar de todas formas.</div>
+    </section>
+
+    <section class="section" id="espacio">
+      <h2>7. Espacio en disco estimado</h2>
+      <table>
+        <tr><th>Componente</th><th>Espacio estimado</th></tr>
+        <tr><td>Instalación base</td><td>300 MB aprox.</td></tr>
+        <tr><td>Base de datos inicial</td><td>5 MB aprox.</td></tr>
+        <tr><td>Crecimiento de datos</td><td>Variable según uso</td></tr>
+      </table>
+    </section>
+
+    <section class="section" id="recomendaciones">
+      <h2>8. Recomendaciones finales</h2>
+      <ul>
+        <li>Usar una PC dedicada al sistema para evitar conflictos.</li>
+        <li>Respaldar información de forma periódica.</li>
+        <li>No apagar la PC de forma brusca durante operación.</li>
+        <li>Mantener usuarios y contraseñas bajo control del administrador.</li>
+      </ul>
+      <div class="ok">Con estas condiciones, el sistema opera de forma estable en negocio real.</div>
+    </section>
+
+    <footer>Control de Inventario AZ • Requisitos del Sistema • 2026</footer>
+  </main>
+
+  <a class="whatsapp-float" href="https://wa.me/6471200790" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp">
+    <span>💬</span>
+    <span>WhatsApp</span>
+  </a>
+</body>
+</html>

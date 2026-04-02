@@ -1,0 +1,66 @@
+{
+  "name": "control-inventario-az",
+  "version": "1.0.0",
+  "description": "Sistema profesional de control de inventario, ventas y gastos",
+  "main": "electron/main.js",
+  "scripts": {
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "electron:dev": "electron .",
+    "electron:build": "electron-builder",
+    "start": "npm run build:frontend && npm run electron:dev",
+    "rebuild:electron": "npx electron-rebuild -m backend",
+    "package": "npm run build:frontend && npm run rebuild:electron && electron-builder && cd backend && npm rebuild sqlite3"
+  },
+  "keywords": [
+    "inventario",
+    "ventas",
+    "pos",
+    "electron",
+    "desktop"
+  ],
+  "author": "AZ Software",
+  "license": "MIT",
+  "devDependencies": {
+    "@electron/rebuild": "^4.0.3",
+    "concurrently": "^8.2.2",
+    "electron": "^28.1.0",
+    "electron-builder": "^24.9.1",
+    "png-to-ico": "^3.0.1",
+    "sharp": "^0.34.5"
+  },
+  "build": {
+    "appId": "com.az.control-inventario",
+    "productName": "Control Inventario AZ",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "frontend/dist/**/*"
+    ],
+    "asar": false,
+    "extraResources": [
+      {
+        "from": "backend",
+        "to": "backend",
+        "filter": ["**/*", "!node_modules/.cache/**"]
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "electron/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "electron/icon.ico",
+      "uninstallerIcon": "electron/icon.ico"
+    }
+  }
+}

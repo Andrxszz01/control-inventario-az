@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guia de Instalacion - Generic Text Only</title>
+  <style>
+    :root {
+      --bg: #ebedf1;
+      --card: #f4f5f7;
+      --ink: #1f2937;
+      --muted: #4b5563;
+      --line: #d5d9e0;
+      --blue: #1f48a1;
+      --blue-2: #2b64f1;
+      --blue-soft: #dbe8ff;
+      --hl: #fff1a8;
+      --ok-bg: #eafaf0;
+      --ok-line: #9ed9b4;
+      --ok-text: #14532d;
+      --warn-bg: #fff4e8;
+      --warn-line: #ffc892;
+      --warn-text: #9a3412;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.55;
+    }
+
+    .top {
+      background: linear-gradient(135deg, #183579 0%, #2454c8 100%);
+      color: #fff;
+      padding: 22px 16px;
+      border-bottom: 4px solid #12306d;
+    }
+
+    .top-wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .top img {
+      width: 52px;
+      height: 52px;
+      object-fit: contain;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.18);
+      padding: 6px;
+    }
+
+    .top h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      letter-spacing: 0.2px;
+    }
+
+    .top p {
+      margin: 4px 0 0;
+      font-size: 0.94rem;
+      opacity: 0.94;
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 16px 14px 40px;
+    }
+
+    .summary {
+      background: #f8f9fb;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+    }
+
+    .summary h2 {
+      margin: 0 0 10px;
+      font-size: 1.1rem;
+      color: #153475;
+    }
+
+    .summary ul {
+      margin: 0;
+      padding-left: 18px;
+      columns: 2;
+      column-gap: 26px;
+    }
+
+    .summary li {
+      margin: 3px 0;
+      color: #243b69;
+      font-weight: 600;
+      font-size: 0.93rem;
+    }
+
+    .step-card {
+      margin-top: 14px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 7px 18px rgba(15, 23, 42, 0.05);
+    }
+
+    .step-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.96rem;
+      font-weight: 700;
+      color: #fff;
+      background: var(--blue-2);
+      flex-shrink: 0;
+    }
+
+    .step-head h3 {
+      margin: 0;
+      font-size: 1.05rem;
+      color: #1f3f87;
+    }
+
+    .step-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .window {
+      margin-top: 12px;
+      border: 1px solid #b6c4dd;
+      border-radius: 9px;
+      overflow: hidden;
+      background: #f7f9fd;
+      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.08);
+    }
+
+    .window-bar {
+      background: var(--blue);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 10px;
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    .dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .dot.y { background: #facc15; }
+    .dot.g { background: #34d399; }
+    .dot.r { background: #f87171; }
+
+    .window-body {
+      padding: 10px;
+      background: #f3f6fb;
+    }
+
+    .row {
+      border: 1px solid #d8dee9;
+      border-radius: 6px;
+      background: #fff;
+      padding: 8px 10px;
+      margin-bottom: 8px;
+      color: #22304d;
+      font-size: 0.94rem;
+    }
+
+    .row:last-child { margin-bottom: 0; }
+
+    .row.active {
+      border-color: #5f8ef6;
+      background: var(--blue-soft);
+    }
+
+    .row small {
+      display: block;
+      color: #64748b;
+      font-size: 0.8rem;
+      margin-top: 2px;
+    }
+
+    .search {
+      border: 1px solid #a7b3c8;
+      background: #fff;
+      border-radius: 4px;
+      padding: 7px 10px;
+      margin-bottom: 9px;
+      font-family: "Consolas", monospace;
+      color: #111827;
+    }
+
+    .focus {
+      background: var(--hl);
+      padding: 1px 4px;
+      border-radius: 4px;
+      font-weight: 700;
+      color: #1e3a8a;
+    }
+
+    .arrow {
+      text-align: center;
+      font-size: 1.7rem;
+      color: var(--blue-2);
+      margin: 6px 0;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .tip, .ok, .warn {
+      margin-top: 10px;
+      border-radius: 8px;
+      border: 1px solid;
+      padding: 9px 10px;
+      font-size: 0.93rem;
+    }
+
+    .tip {
+      background: #e8efff;
+      border-color: #b5cbff;
+      color: #1e3a8a;
+    }
+
+    .ok {
+      background: var(--ok-bg);
+      border-color: var(--ok-line);
+      color: var(--ok-text);
+    }
+
+    .warn {
+      background: var(--warn-bg);
+      border-color: var(--warn-line);
+      color: var(--warn-text);
+    }
+
+    .troubleshoot {
+      margin-top: 14px;
+      background: #f8f9fb;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .troubleshoot h2 {
+      margin: 0;
+      font-size: 1.05rem;
+      color: #153475;
+    }
+
+    .troubleshoot ul {
+      margin: 8px 0 0;
+      padding-left: 18px;
+      color: #334155;
+    }
+
+    .footer {
+      margin-top: 15px;
+      text-align: center;
+      color: #667085;
+      font-size: 0.82rem;
+    }
+
+    @media (max-width: 820px) {
+      .summary ul { columns: 1; }
+      .top h1 { font-size: 1.2rem; }
+      .step-card p { font-size: 0.95rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="top-wrap">
+      <img src="frontend/public/logo.png" alt="Logo AZ" />
+      <div>
+        <h1>Guia de Instalacion: Generic Text Only en Windows</h1>
+        <p>Panel de Control - Sistema de Inventario y Ventas</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="summary">
+      <h2>📋 Pasos en esta guia</h2>
+      <ul>
+        <li>Abrir Configuracion de Windows</li>
+        <li>Ir a Impresoras y Escaneres</li>
+        <li>Agregar una impresora o escaner</li>
+        <li>Seleccionar impresora manualmente</li>
+        <li>Elegir el driver Generic / Text Only</li>
+        <li>Asignar nombre y finalizar</li>
+        <li>Establecer como impresora predeterminada</li>
+        <li>Probar impresion desde el sistema</li>
+      </ul>
+    </section>
+
+    <section class="step-card">
+      <div class="step-head"><span class="badge">1</span><h3>Abrir Configuracion de Windows</h3></div>
+      <p>Presione las teclas <strong>Windows + I</strong> al mismo tiempo para abrir la configuracion, o haga clic en Inicio y luego en el icono de engranaje.</p>
+
+      <div class="window">
+        <div class="window-bar">
+          <span>🔍 Buscar en Windows</span>
+          <span class="dots"><span class="dot y"></span><span class="dot g"></span><span class="dot r"></span></span>
+        </div>
+        <div class="window-body">
+          <div class="search">🔎 configuracion</div>
+          <div class="row active">⚙️ Configuracion<small>Aplicacion del sistema</small></div>
+        </div>
+      </div>
+
+      <div class="tip">💡 Tambien puede escribir <span class="focus">"configuracion"</span> en la barra de busqueda de Windows y hacer clic en el resultado.</div>
+    </section>
+
+    <section class="step-card">
+      <div class="step-head"><span class="badge">2</span><h3>Ir a Impresoras y Escaneres</h3></div>
+      <p>Dentro de Configuracion, haga clic en <strong>Bluetooth y dispositivos</strong> (Windows 11) o <strong>Dispositivos</strong> (Windows 10), y luego en <strong>Impresoras y escaneres</strong>.</p>
+
+      <div class="window">
+        <div class="window-bar">
+          <span>⚙️ Configuracion</span>
+          <span class="dots"><span class="dot y"></span><span class="dot g"></span><span class="dot r"></span></span>
+        </div>
+        <div class="window-body">
+          <div class="row">🏠 Sistema</div>
+          <div class="row active">🖨️ Bluetooth y dispositivos<small>Impresoras, escaneres, raton, teclado...</small></div>
+          <div class="row">🌐 Red e Internet</div>
+        </div>
+      </div>
+
+      <div class="arrow">↓</div>
+
+      <div class="window">
+        <div class="window-bar">
+          <span>🖨️ Bluetooth y dispositivos</span>
+          <span class="dots"><span class="dot y"></span><span class="dot g"></span><span class="dot r"></span></span>
+        </div>
+        <div class="window-body">
+          <div class="row active">🖨️ Impresoras y escaneres<small>Agregar o administrar impresoras y escaneres</small></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="step-card">
+      <div class="step-head"><span class="badge">3</span><h3>Agregar una impresora o escaner</h3></div>
+      <p>En la pantalla de Impresoras y escaneres, haga clic en el boton <strong>Agregar dispositivo</strong>.</p>
+      <div class="window">
+        <div class="window-bar">
+          <span>🖨️ Impresoras y escaneres</span>
+          <span class="dots"><span class="dot y"></span><span class="dot g"></span><span class="dot r"></span></span>
+        </div>
+        <div class="window-body">
+          <div class="row">Buscar impresoras y escaneres...</div>
+          <div class="row active">+ Agregar dispositivo</div>
+          <div class="row">🖨️ Microsoft Print to PDF</div>
+          <div class="row">🖨️ Microsoft XPS Document Writer</div>
+        </div>
+      </div>
+      <div class="tip">💡 Si no encuentra su impresora, use la opcion <span class="focus">"La impresora que quiero no esta en la lista"</span>.</div>
+    </section>
+
+    <section class="step-card">
+      <div class="step-head"><span class="badge">4</span><h3>Seleccionar impresora manualmente</h3></div>
+      <p>Si Windows no detecta la impresora, haga clic en <strong>La impresora que quiero no esta en la lista</strong>.</p>
+      <div class="window">
+        <div class="window-bar">
+          <span>Agregar impresora</span>
+          <span class="dots"><span class="dot y"></span><span class="dot g"></span><span class="dot r"></span></span>
+        </div>
+        <div class="window-body">
+          <div class="row">Buscando impresoras...</div>
+          <div class="row">No se encontraron impresoras</div>
+          <div class="row active">🔗 La impresora que quiero no esta en la lista</div>
+          <div class="row">Agregar una impresora local o de red con configuracion manual</div>
+        </div>
+      </div>
+      <div class="tip">👆 Seleccione <span class="focus">Agregar impresora local o de red con configuracion manual</span> y haga clic en Siguiente.</div>
+    </section>
+
+    <section class="step-card">
+      <div class="step-head"><span class="badge">5</span><h3>Elegir el driver Generic / Text Only</h3></div>
+      <p>Seleccione puerto USB001 (o el correcto) y en drivers use Generic como fabricante y Generic / Text Only como modelo.</p>
+      <div class="window">
+        <div class="window-bar">
+          <span>Instalar el controlador de impresora</span>
+          <span class="dots"><span class="dot y"></span><span class="dot g"></span><span class="dot r"></span></span>
+        </div>
+        <div class="window-body">
+          <div class="row">🏭 Epson</div>
+          <div class="row">🏭 Fujitsu</div>
+          <div class="row active">🏭 Generic</div>
+          <div class="row">🏭 HP</div>
+          <div class="row active">🖨️ Generic / Text Only</div>
+        </div>
+      </div>
+      <div class="tip">💡 Si no aparece Generic, haga clic en Windows Update y espere unos minutos.</div>
+    </section>
+
+    <section class="step-card">
+      <div class="step-head"><span class="badge">6</span><h3>Asignar nombre y finalizar</h3></div>
+      <p>Escriba un nombre como <strong>Impresora Tickets</strong> y termine la instalacion.</p>
+      <div class="window">
+        <div class="window-bar">
+          <span>Escriba un nombre de impresora</span>
+          <span class="dots"><span class="dot y"></span><span class="dot g"></span><span class="dot r"></span></span>
+        </div>
+        <div class="window-body">
+          <div class="row">Nombre de impresora:</div>
+          <div class="search">Impresora Tickets</div>
+          <div class="row active">✅ Impresora instalada correctamente</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="step-card">
+      <div class="step-head"><span class="badge">7</span><h3>Establecer como impresora predeterminada</h3></div>
+      <p>Abra la impresora instalada y pulse Establecer como predeterminada.</p>
+      <div class="window">
+        <div class="window-bar">
+          <span>🖨️ Impresoras y escaneres</span>
+          <span class="dots"><span class="dot y"></span><span class="dot g"></span><span class="dot r"></span></span>
+        </div>
+        <div class="window-body">
+          <div class="row active">🖨️ Impresora Tickets - Predeterminada</div>
+          <div class="row">🖨️ Microsoft Print to PDF</div>
+        </div>
+      </div>
+      <div class="warn">⚠️ En Windows 11, desactive primero "Permitir que Windows administre mi impresora predeterminada".</div>
+    </section>
+
+    <section class="step-card">
+      <div class="step-head"><span class="badge">8</span><h3>Probar impresion desde el sistema</h3></div>
+      <p>Abra el Panel de Control, haga una venta de prueba y pulse <strong>Imprimir Ticket</strong>.</p>
+      <div class="ok">✅ Si el ticket sale correctamente, la instalacion fue exitosa.</div>
+      <div class="warn">⚠️ Si no sale nada, revise cable USB, encendido de impresora y vuelva a intentar.</div>
+    </section>
+
+    <section class="troubleshoot">
+      <h2>Problemas comunes</h2>
+      <ul>
+        <li>Sale texto ilegible o simbolos raros: verifique que el driver sea exactamente Generic / Text Only.</li>
+        <li>No imprime nada: revise cable USB y que la impresora este encendida.</li>
+        <li>Sale en blanco: imprima pagina de prueba desde propiedades de la impresora.</li>
+        <li>Error al imprimir desde el sistema: reinicie la app y vuelva a intentar.</li>
+      </ul>
+    </section>
+
+    <div class="footer">Panel de Control - Sistema de Inventario y Ventas | Version 1.0.0 | Abril 2026</div>
+  </main>
+</body>
+</html>
