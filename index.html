@@ -14,6 +14,7 @@
       --line: #dbe2ea;
       --card: #ffffff;
       --soft: #fff6eb;
+      --deep: #0f3551;
     }
     * { box-sizing: border-box; }
     body {
@@ -31,115 +32,192 @@
       padding: 20px;
     }
 
-    .orb {
+    .aura {
       position: fixed;
       z-index: -1;
       border-radius: 999px;
-      filter: blur(2px);
-      opacity: .55;
+      filter: blur(10px);
+      opacity: .35;
       pointer-events: none;
     }
-    .orb.one {
-      width: 260px;
-      height: 260px;
-      top: -60px;
-      right: -80px;
-      background: radial-gradient(circle at 30% 30%, #ffc48c, rgba(255, 196, 140, 0));
+    .aura.one {
+      width: 320px;
+      height: 320px;
+      top: -90px;
+      right: -120px;
+      background: radial-gradient(circle at 40% 40%, #ffbf86, rgba(255, 191, 134, 0));
     }
-    .orb.two {
-      width: 220px;
-      height: 220px;
+    .aura.two {
+      width: 280px;
+      height: 280px;
       bottom: -80px;
-      left: -70px;
-      background: radial-gradient(circle at 40% 40%, #9fcbff, rgba(159, 203, 255, 0));
+      left: -90px;
+      background: radial-gradient(circle at 45% 45%, #9fcfff, rgba(159, 207, 255, 0));
     }
 
-    .card {
-      width: min(920px, 100%);
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 26px;
-      padding: 30px;
-      box-shadow: 0 14px 30px rgba(10, 28, 48, 0.08);
+    .shell {
+      width: min(1020px, 100%);
+      background: linear-gradient(135deg, #ffffff 0%, #fefaf5 100%);
+      border: 1px solid #d4dfeb;
+      border-radius: 30px;
+      padding: 14px;
+      box-shadow: 0 20px 46px rgba(10, 28, 48, 0.14);
       position: relative;
       overflow: hidden;
     }
 
-    .card::before {
-      content: "";
-      position: absolute;
-      width: 240px;
-      height: 240px;
-      right: -80px;
-      top: -110px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 20% 30%, #ffe7cf, rgba(255, 231, 207, 0));
-      pointer-events: none;
+    .deck {
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: #fff;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      min-height: 540px;
     }
 
-    .eyebrow {
+    .left {
+      background: linear-gradient(165deg, var(--deep) 0%, var(--brand) 48%, #1a638f 100%);
+      color: #fff;
+      padding: 24px;
+      position: relative;
+      isolation: isolate;
+    }
+
+    .left::before {
+      content: "";
+      position: absolute;
+      inset: auto -30px -80px auto;
+      width: 190px;
+      height: 190px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 40% 40%, rgba(255, 170, 108, 0.45), rgba(255, 170, 108, 0));
+      z-index: -1;
+    }
+
+    .badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
       border-radius: 999px;
-      background: #eef5ff;
-      color: var(--brand);
-      padding: 7px 12px;
-      font-size: .76rem;
-      font-weight: 800;
-      letter-spacing: .06em;
+      padding: 6px 10px;
+      font-size: .72rem;
       text-transform: uppercase;
+      letter-spacing: .07em;
+      font-weight: 800;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .logo-mark {
+      margin-top: 14px;
+      width: 100%;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      background: linear-gradient(140deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04));
+      padding: 14px;
+    }
+
+    .logo-mark strong {
+      display: block;
+      font-size: 2rem;
+      line-height: 1;
+      letter-spacing: .02em;
+      font-weight: 900;
+    }
+
+    .logo-mark span {
+      display: block;
+      margin-top: 8px;
+      font-size: .84rem;
+      line-height: 1.45;
+      color: #d6ecff;
+    }
+
+    .left ul {
+      margin: 18px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 8px;
+    }
+
+    .left li {
+      font-size: .86rem;
+      color: #e9f5ff;
+      border-left: 2px solid rgba(255, 255, 255, 0.3);
+      padding-left: 10px;
+    }
+
+    .right {
+      padding: 26px;
+      background: linear-gradient(180deg, #ffffff 0%, #fffaf4 100%);
     }
 
     h1 {
-      margin: 12px 0 8px;
+      margin: 0;
       color: var(--brand);
-      font-size: clamp(1.7rem, 4vw, 2.6rem);
+      font-size: clamp(1.55rem, 3vw, 2.3rem);
       line-height: 1.12;
-      letter-spacing: -.02em;
+      letter-spacing: -0.02em;
     }
 
     .lead {
-      margin: 0;
-      line-height: 1.6;
+      margin: 10px 0 0;
+      line-height: 1.55;
       color: var(--muted);
-      max-width: 760px;
+      max-width: 620px;
+      font-size: .95rem;
     }
 
-    .grid {
+    .menu-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 14px;
-      margin-top: 22px;
+      margin-top: 18px;
     }
 
     .menu-item {
       text-decoration: none;
       border: 1px solid var(--line);
       border-radius: 16px;
-      padding: 16px;
+      padding: 16px 15px;
       color: var(--ink);
-      background: linear-gradient(135deg, #fffdfb 0%, #fff6ec 100%);
+      background: linear-gradient(135deg, #fffdfb 0%, #fff4e8 100%);
       display: grid;
-      grid-template-columns: 46px 1fr;
+      grid-template-columns: 50px 1fr;
       gap: 12px;
       align-items: center;
-      transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+      transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease, background .22s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .menu-item::after {
+      content: "";
+      position: absolute;
+      inset: auto -25px -42px auto;
+      width: 120px;
+      height: 120px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(255, 146, 51, 0.16), rgba(255, 146, 51, 0));
+      pointer-events: none;
     }
 
     .menu-item:hover {
-      border-color: #ffb178;
-      transform: translateY(-2px);
-      box-shadow: 0 12px 26px rgba(18, 73, 111, .12);
+      border-color: #ffbf8e;
+      background: linear-gradient(135deg, #fffdfb 0%, #ffeede 100%);
+      transform: translateY(-3px) scale(1.01);
+      box-shadow: 0 14px 26px rgba(18, 73, 111, .12);
     }
 
     .menu-icon {
-      width: 46px;
-      height: 46px;
+      width: 50px;
+      height: 50px;
       border-radius: 12px;
       display: grid;
       place-items: center;
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 800;
       color: #fff;
       background: linear-gradient(140deg, #1f6ba0, #12496f);
@@ -174,7 +252,7 @@
     }
 
     .footer-note {
-      margin-top: 16px;
+      margin-top: 14px;
       border-radius: 12px;
       border: 1px dashed #c6d5e3;
       background: var(--soft);
@@ -184,21 +262,37 @@
     }
 
     @media (max-width: 700px) {
-      .card { padding: 20px; border-radius: 22px; }
-      .grid { grid-template-columns: 1fr; }
-      .menu-item { grid-template-columns: 42px 1fr; padding: 14px; }
-      .menu-icon { width: 42px; height: 42px; font-size: 1rem; }
+      .shell { padding: 10px; border-radius: 22px; }
+      .deck { grid-template-columns: 1fr; }
+      .left { padding: 20px; }
+      .right { padding: 18px; }
+      .menu-grid { grid-template-columns: 1fr; }
+      .menu-item { grid-template-columns: 44px 1fr; padding: 13px; }
+      .menu-icon { width: 44px; height: 44px; font-size: .95rem; }
     }
   </style>
 </head>
 <body>
-  <span class="orb one" aria-hidden="true"></span>
-  <span class="orb two" aria-hidden="true"></span>
-  <main class="card">
-    <span class="eyebrow">Acceso Rapido</span>
-    <h1>Centro de Documentacion y Presentacion</h1>
-    <p class="lead">Abre la seccion que necesitas para presentar el sistema, capacitar personal o validar requerimientos del cliente.</p>
-    <div class="grid">
+  <span class="aura one" aria-hidden="true"></span>
+  <span class="aura two" aria-hidden="true"></span>
+  <main class="shell">
+    <section class="deck">
+      <aside class="left">
+        <span class="badge">Control AZ</span>
+        <div class="logo-mark">
+          <strong>AZ</strong>
+          <span>Panel de acceso a toda la documentacion comercial y tecnica del sistema.</span>
+        </div>
+        <ul>
+          <li>Presenta el sistema con una ruta clara.</li>
+          <li>Comparte manuales listos para cliente final.</li>
+          <li>Abre guias sin instalar nada adicional.</li>
+        </ul>
+      </aside>
+      <section class="right">
+        <h1>Menu de Opciones Profesional</h1>
+        <p class="lead">Elige la seccion segun el tipo de cliente: venta, capacitacion o validacion tecnica.</p>
+        <div class="menu-grid">
       <a class="menu-item" href="Control%20de%20Inventario%20AZ_portable.html">
         <span class="menu-icon">01</span>
         <span>
@@ -227,8 +321,10 @@
           <small class="menu-desc">Configuracion de impresora ticket con driver Generic/Text Only.</small>
         </span>
       </a>
-    </div>
-    <p class="footer-note">Tip comercial: comparte primero la Pagina Comercial y luego el Manual para reforzar confianza.</p>
+        </div>
+        <p class="footer-note">Tip comercial: comparte primero Pagina Comercial, luego Manual y finalmente Requisitos para cerrar con confianza.</p>
+      </section>
+    </section>
   </main>
 </body>
 </html>
