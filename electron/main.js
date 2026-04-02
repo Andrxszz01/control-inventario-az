@@ -1,4 +1,4 @@
-const { app, BrowserWindow, dialog, session, ipcMain } = require('electron');
+const { app, BrowserWindow, dialog, session, ipcMain, shell } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
 const http = require('http');
@@ -286,5 +286,17 @@ ipcMain.handle('print-text-ticket', async (_event, text) => {
     return { success: true, message: null };
   } catch (error) {
     return { success: false, message: error.message || 'Error de impresion en texto' };
+  }
+});
+
+ipcMain.handle('open-external', async (_event, url) => {
+  try {
+    if (!url || typeof url !== 'string') {
+      return { success: false, message: 'URL invalida' };
+    }
+    await shell.openExternal(url);
+    return { success: true };
+  } catch (error) {
+    return { success: false, message: error.message || 'No se pudo abrir el enlace externo' };
   }
 });

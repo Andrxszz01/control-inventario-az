@@ -32,7 +32,7 @@ const upload = multer({ storage, fileFilter, limits: { fileSize: 5 * 1024 * 1024
 class ProductController {
   async getAll(req, res) {
     try {
-      const { categoria, busqueda, soloActivos = 'true' } = req.query;
+      const { categoria, busqueda, soloActivos = 'true', tipo, paraVenta = 'false' } = req.query;
       
       let sql = `
         SELECT p.*, c.nombre as categoria_nombre 
@@ -49,6 +49,15 @@ class ProductController {
       if (categoria) {
         sql += ' AND p.categoria_id = ?';
         params.push(categoria);
+      }
+
+      if (tipo && ['producto', 'insumo', 'servicio'].includes(tipo)) {
+        sql += ' AND p.tipo = ?';
+        params.push(tipo);
+      }
+
+      if (paraVenta === 'true') {
+        sql += " AND p.tipo IN ('producto', 'servicio')";
       }
 
       if (busqueda) {
@@ -92,6 +101,7 @@ class ProductController {
       const {
         nombre,
         categoria_id,
+        tipo = 'producto',
         precio_compra,
         precio_venta,
         stock,
@@ -105,9 +115,20 @@ class ProductController {
 
       const result = await db.run(
         `INSERT INTO productos 
-         (nombre, categoria_id, codigo_qr, precio_compra, precio_venta, stock, stock_minimo, descripcion, codigo_barras)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [nombre, categoria_id, codigo_qr, precio_compra, precio_venta, stock || 0, stock_minimo || 5, descripcion, codigo_barras || '']
+         (nombre, categoria_id, tipo, codigo_qr, precio_compra, precio_venta, stock, stock_minimo, descripcion, codigo_barras)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          nombre,
+          categoria_id,
+          tipo,
+          codigo_qr,
+          precio_compra,
+          precio_venta,
+          tipo === 'servicio' ? 0 : (stock || 0),
+          tipo === 'servicio' ? 0 : (stock_minimo || 5),
+          descripcion,
+          codigo_barras || ''
+        ]
       );
 
       const producto = await db.get('SELECT * FROM productos WHERE id = ?', [result.id]);
@@ -129,6 +150,7 @@ class ProductController {
       const {
         nombre,
         categoria_id,
+        tipo = 'producto',
         precio_compra,
         precio_venta,
         stock,
@@ -139,10 +161,21 @@ class ProductController {
 
       await db.run(
         `UPDATE productos 
-         SET nombre = ?, categoria_id = ?, precio_compra = ?, precio_venta = ?, 
+         SET nombre = ?, categoria_id = ?, tipo = ?, precio_compra = ?, precio_venta = ?, 
              stock = ?, stock_minimo = ?, descripcion = ?, codigo_barras = ?
          WHERE id = ?`,
-        [nombre, categoria_id, precio_compra, precio_venta, stock, stock_minimo, descripcion, codigo_barras || '', id]
+        [
+          nombre,
+          categoria_id,
+          tipo,
+          precio_compra,
+          precio_venta,
+          tipo === 'servicio' ? 0 : stock,
+          tipo === 'servicio' ? 0 : stock_minimo,
+          descripcion,
+          codigo_barras || '',
+          id
+        ]
       );
 
       const producto = await db.get('SELECT * FROM productos WHERE id = ?', [id]);
@@ -228,7 +261,7 @@ class ProductController {
         `SELECT p.*, c.nombre as categoria_nombre 
          FROM productos p 
          LEFT JOIN categorias c ON p.categoria_id = c.id
-         WHERE p.stock <= p.stock_minimo AND p.activo = 1
+        WHERE p.stock <= p.stock_minimo AND p.activo = 1 AND p.tipo != 'servicio'
          ORDER BY p.stock ASC`
       );
       res.json({ success: true, productos });

@@ -6,12 +6,13 @@ import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card'
 import { ConfirmDialog } from '../components/ui/ConfirmDialog';
 import BarcodeScanner from '../components/ui/BarcodeScanner';
 import { useToast } from '../contexts/ToastContext';
-import { productosService, ventasService } from '../services/api';
+import { clientesService, productosService, ventasService } from '../services/api';
 import { formatCurrency } from '../utils/helpers';
 import { Plus, Minus, Trash2, ShoppingCart, CreditCard, Banknote, Printer, Search, ImagePlus, Loader2, ScanBarcode } from 'lucide-react';
 
 export default function Ventas() {
   const [lastVentaId, setLastVentaId] = useState(null);
+  const [ventaCompletada, setVentaCompletada] = useState(null);
   const { addToast } = useToast();
   const [productos, setProductos] = useState([]);
   const [carrito, setCarrito] = useState([]);
@@ -22,15 +23,20 @@ export default function Ventas() {
   const [procesando, setProcesando] = useState(false);
   const [limpiarConfirm, setLimpiarConfirm] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
+  const [clientes, setClientes] = useState([]);
+  const [clienteId, setClienteId] = useState('');
+  const [scannerGunMode, setScannerGunMode] = useState(true);
   const [, startTransition] = useTransition();
   const busquedaRef = useRef(null);
+  const gunBufferRef = useRef('');
+  const lastKeyTsRef = useRef(0);
 
   // Warn when navigating away with items in the cart
   const blocker = useBlocker(carrito.length > 0 && !procesando);
 
   const loadProductos = useCallback(async (search) => {
     try {
-      const response = await productosService.getAll({ busqueda: search });
+      const response = await productosService.getAll({ busqueda: search, paraVenta: true });
       startTransition(() => {
         setProductos(response.data.productos ?? []);
       });
@@ -40,6 +46,18 @@ export default function Ventas() {
   }, [addToast]);
 
   useEffect(() => { loadProductos(''); }, [loadProductos]);
+
+  useEffect(() => {
+    const loadClientes = async () => {
+      try {
+        const response = await clientesService.getAll();
+        setClientes(response.data || []);
+      } catch {
+        // Optional data, silent fail
+      }
+    };
+    loadClientes();
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => loadProductos(busqueda), 300);
@@ -61,15 +79,48 @@ export default function Ventas() {
     setShowScanner(false);
   }, [addToast]);
 
+  useEffect(() => {
+    if (!scannerGunMode) return;
+
+    const onKeyDown = (e) => {
+      const tag = (e.target?.tagName || '').toLowerCase();
+      const isTypingField = tag === 'input' || tag === 'textarea' || tag === 'select' || e.target?.isContentEditable;
+      if (isTypingField) return;
+
+      const now = Date.now();
+      if (now - lastKeyTsRef.current > 120) {
+        gunBufferRef.current = '';
+      }
+      lastKeyTsRef.current = now;
+
+      if (e.key === 'Enter') {
+        const code = gunBufferRef.current.trim();
+        gunBufferRef.current = '';
+        if (code.length >= 4) {
+          handleBarcodeScan(code);
+        }
+        return;
+      }
+
+      if (e.key.length === 1) {
+        gunBufferRef.current += e.key;
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [scannerGunMode, handleBarcodeScan]);
+
   const agregarAlCarritoDirecto = (producto) => {
-    if (producto.stock === 0) {
+    const controlaStock = producto.tipo !== 'servicio';
+    if (controlaStock && producto.stock === 0) {
       addToast(`"${producto.nombre}" no tiene stock disponible`, 'warning');
       return;
     }
     setCarrito(prev => {
       const existe = prev.find((item) => item.producto_id === producto.id);
       if (existe) {
-        if (existe.cantidad < producto.stock) {
+        if (!controlaStock || existe.cantidad < producto.stock) {
           return prev.map((item) =>
             item.producto_id === producto.id
               ? { ...item, cantidad: item.cantidad + 1 }
@@ -84,20 +135,22 @@ export default function Ventas() {
         nombre: producto.nombre,
         precio: producto.precio_venta,
         cantidad: 1,
-        stock_disponible: producto.stock,
+        stock_disponible: controlaStock ? producto.stock : Number.MAX_SAFE_INTEGER,
+        tipo: producto.tipo || 'producto',
       }];
     });
   };
 
   const agregarAlCarrito = (producto) => {
-    if (producto.stock === 0) {
+    const controlaStock = producto.tipo !== 'servicio';
+    if (controlaStock && producto.stock === 0) {
       addToast(`"${producto.nombre}" no tiene stock disponible`, 'warning');
       return;
     }
     setCarrito(prev => {
       const existe = prev.find((item) => item.producto_id === producto.id);
       if (existe) {
-        if (existe.cantidad < producto.stock) {
+        if (!controlaStock || existe.cantidad < producto.stock) {
           return prev.map((item) =>
             item.producto_id === producto.id
               ? { ...item, cantidad: item.cantidad + 1 }
@@ -112,7 +165,8 @@ export default function Ventas() {
         nombre: producto.nombre,
         precio: producto.precio_venta,
         cantidad: 1,
-        stock_disponible: producto.stock,
+        stock_disponible: controlaStock ? producto.stock : Number.MAX_SAFE_INTEGER,
+        tipo: producto.tipo || 'producto',
       }];
     });
   };
@@ -179,6 +233,39 @@ export default function Ventas() {
     }
   };
 
+  const buildWhatsappMessage = (venta) => {
+    const folio = venta?.id || '';
+    const totalVenta = Number(venta?.total || 0);
+    const metodo = venta?.metodo_pago || metodoPago;
+    return [
+      'Hola, te comparto tu comprobante de compra.',
+      `Folio: ${folio}`,
+      `Total: ${formatCurrency(totalVenta)}`,
+      `Metodo de pago: ${metodo}`,
+      'Gracias por tu compra.',
+    ].join('\n');
+  };
+
+  const enviarTicketWhatsapp = async () => {
+    if (!ventaCompletada) return;
+    const text = buildWhatsappMessage(ventaCompletada);
+    const waUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+
+    try {
+      if (window.electronAPI?.openExternal) {
+        const result = await window.electronAPI.openExternal(waUrl);
+        if (!result?.success) {
+          throw new Error(result?.message || 'No se pudo abrir WhatsApp');
+        }
+      } else {
+        window.open(waUrl, '_blank', 'noopener,noreferrer');
+      }
+      addToast('Ticket preparado para enviar por WhatsApp', 'success');
+    } catch {
+      addToast('No se pudo abrir WhatsApp', 'error');
+    }
+  };
+
 
   const finalizarVenta = async () => {
     if (carrito.length === 0) {
@@ -203,6 +290,7 @@ export default function Ventas() {
         descuento: descuentoAplicado,
         metodo_pago: metodoPago,
         monto_recibido: metodoPago === 'efectivo' ? Number(montoRecibido) : total,
+        cliente_id: clienteId ? Number(clienteId) : null,
       };
 
       const response = await ventasService.create(ventaData);
@@ -212,12 +300,13 @@ export default function Ventas() {
         if (metodoPago === 'efectivo' && cambio > 0) {
           addToast(`Cambio a entregar: ${formatCurrency(cambio)}`, 'info', 7000);
         }
-        await imprimirTicket(response.data.venta.id);
         setLastVentaId(response.data.venta.id);
+        setVentaCompletada(response.data.venta);
         setCarrito([]);
         setDescuento(0);
         setMontoRecibido('');
         setMetodoPago('efectivo');
+        setClienteId('');
         loadProductos(busqueda);
       }
     } catch (error) {
@@ -273,6 +362,14 @@ export default function Ventas() {
           >
             <ScanBarcode size={20} />
           </Button>
+          <Button
+            variant={scannerGunMode ? 'default' : 'outline'}
+            onClick={() => setScannerGunMode((s) => !s)}
+            title="Modo escáner pistola (USB/Bluetooth HID)"
+            className="shrink-0"
+          >
+            Pistola {scannerGunMode ? 'ON' : 'OFF'}
+          </Button>
         </div>
 
         <BarcodeScanner
@@ -290,8 +387,8 @@ export default function Ventas() {
             {productos.map((producto) => (
               <Card
                 key={producto.id}
-                className={`transition-shadow ${producto.stock > 0 ? 'hover:shadow-lg cursor-pointer' : 'opacity-60 cursor-not-allowed'}`}
-                onClick={() => producto.stock > 0 && agregarAlCarrito(producto)}
+                className={`transition-shadow ${(producto.tipo === 'servicio' || producto.stock > 0) ? 'hover:shadow-lg cursor-pointer' : 'opacity-60 cursor-not-allowed'}`}
+                onClick={() => (producto.tipo === 'servicio' || producto.stock > 0) && agregarAlCarrito(producto)}
               >
                 <CardContent className="p-4">
                   <div className="flex gap-3 items-start">
@@ -313,16 +410,19 @@ export default function Ventas() {
                         {formatCurrency(producto.precio_venta)}
                       </p>
                       <p className={`text-xs font-medium ${
+                        producto.tipo === 'servicio' ? 'text-blue-600' :
                         producto.stock === 0 ? 'text-red-600' :
                         producto.stock <= producto.stock_minimo ? 'text-amber-600' : 'text-muted-foreground'
                       }`}>
-                        {producto.stock === 0 ? 'Sin stock' : `Stock: ${producto.stock}`}
+                        {producto.tipo === 'servicio'
+                          ? 'Servicio (sin stock)'
+                          : (producto.stock === 0 ? 'Sin stock' : `Stock: ${producto.stock}`)}
                       </p>
                     </div>
                     <Button
                       size="sm"
                       onClick={(e) => { e.stopPropagation(); agregarAlCarrito(producto); }}
-                      disabled={producto.stock === 0}
+                      disabled={producto.tipo !== 'servicio' && producto.stock === 0}
                     >
                       <Plus size={16} />
                     </Button>
@@ -394,6 +494,21 @@ export default function Ventas() {
                   ))}
                 </div>
 
+                  <div>
+                    <label className="text-sm font-medium">Cliente (opcional)</label>
+                    <select
+                      className="mt-1 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                      value={clienteId}
+                      onChange={(e) => setClienteId(e.target.value)}
+                    >
+                      <option value="">Venta general</option>
+                      {clientes.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.nombre} {c.tipo === 'paciente' ? '(Paciente)' : ''}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 <div className="space-y-3 border-t pt-4">
                   {/* Payment method */}
                   <div>
@@ -494,7 +609,7 @@ export default function Ventas() {
                     {procesando ? (
                       <><Loader2 size={16} className="mr-2 animate-spin" />Procesando...</>
                     ) : (
-                      <><Printer size={16} className="mr-2" />Cobrar e Imprimir Ticket</>
+                      <><Printer size={16} className="mr-2" />Cobrar</>
                     )}
                   </Button>
                 </div>
@@ -503,6 +618,32 @@ export default function Ventas() {
           </CardContent>
         </Card>
       </div>
+
+      {ventaCompletada && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <CardTitle>Venta registrada</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <p className="text-sm text-muted-foreground">
+                Folio #{ventaCompletada.id} por {formatCurrency(ventaCompletada.total)}. ¿Qué deseas hacer con el ticket?
+              </p>
+              <div className="grid grid-cols-1 gap-2">
+                <Button onClick={async () => { await imprimirTicket(ventaCompletada.id); }}>
+                  <Printer size={16} className="mr-2" /> Imprimir ticket
+                </Button>
+                <Button variant="outline" onClick={enviarTicketWhatsapp}>
+                  Enviar por WhatsApp
+                </Button>
+                <Button variant="ghost" onClick={() => setVentaCompletada(null)}>
+                  Omitir
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }

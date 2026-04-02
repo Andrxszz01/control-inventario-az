@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useTransition } from 'react';
+import React, { useEffect, useState, useCallback, useTransition, useRef } from 'react';
 import { useBlocker } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
@@ -14,6 +14,7 @@ import { Plus, Search, Edit, Trash, QrCode, ImagePlus, X, Download, Loader2, Sca
 const EMPTY_FORM = {
   nombre: '',
   categoria_id: '',
+  tipo: 'producto',
   precio_compra: '',
   precio_venta: '',
   stock: '',
@@ -36,6 +37,7 @@ export default function Productos() {
   const { addToast } = useToast();
   const [productos, setProductos] = useState([]);
   const [categorias, setCategorias] = useState([]);
+  const [filtroTipo, setFiltroTipo] = useState('todos');
   const [busqueda, setBusqueda] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [showQrModal, setShowQrModal] = useState(null);
@@ -48,15 +50,20 @@ export default function Productos() {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [showScanner, setShowScanner] = useState(false);
   const [scanTarget, setScanTarget] = useState('search'); // 'search' | 'form'
+  const [scannerGunMode, setScannerGunMode] = useState(true);
   const [, startTransition] = useTransition();
+  const gunBufferRef = useRef('');
+  const lastKeyTsRef = useRef(0);
 
   // Block navigation when modal is open and user has typed something
   const isDirty = showModal && isFormDirty(formData);
   const blocker = useBlocker(isDirty);
 
-  const loadProductos = useCallback(async (search) => {
+  const loadProductos = useCallback(async (search, tipo) => {
     try {
-      const response = await productosService.getAll({ busqueda: search });
+      const params = { busqueda: search };
+      if (tipo && tipo !== 'todos') params.tipo = tipo;
+      const response = await productosService.getAll(params);
       startTransition(() => {
         setProductos(response.data.productos ?? []);
       });
@@ -66,14 +73,43 @@ export default function Productos() {
   }, [addToast]);
 
   useEffect(() => {
-    loadProductos('');
+    loadProductos('', filtroTipo);
     loadCategorias();
-  }, [loadProductos]);
+  }, [loadProductos, filtroTipo]);
 
   useEffect(() => {
-    const timer = setTimeout(() => loadProductos(busqueda), 300);
+    const timer = setTimeout(() => loadProductos(busqueda, filtroTipo), 300);
     return () => clearTimeout(timer);
-  }, [busqueda, loadProductos]);
+  }, [busqueda, filtroTipo, loadProductos]);
+
+  useEffect(() => {
+    if (!scannerGunMode) return;
+
+    const onKeyDown = (e) => {
+      const tag = (e.target?.tagName || '').toLowerCase();
+      const isTypingField = tag === 'input' || tag === 'textarea' || tag === 'select' || e.target?.isContentEditable;
+      if (isTypingField) return;
+
+      const now = Date.now();
+      if (now - lastKeyTsRef.current > 120) gunBufferRef.current = '';
+      lastKeyTsRef.current = now;
+
+      if (e.key === 'Enter') {
+        const code = gunBufferRef.current.trim();
+        gunBufferRef.current = '';
+        if (code.length >= 4) {
+          setBusqueda(code);
+          addToast(`Código escaneado: ${code}`, 'success');
+        }
+        return;
+      }
+
+      if (e.key.length === 1) gunBufferRef.current += e.key;
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [scannerGunMode, addToast]);
 
   const loadCategorias = async () => {
     try {
@@ -88,6 +124,7 @@ export default function Productos() {
     const errors = {};
     if (!formData.nombre.trim()) errors.nombre = 'El nombre es obligatorio';
     if (!formData.categoria_id) errors.categoria_id = 'Selecciona una categoría';
+    if (!formData.tipo) errors.tipo = 'Selecciona un tipo';
     if (formData.precio_compra === '' || Number(formData.precio_compra) < 0)
       errors.precio_compra = 'Ingresa un precio de compra válido';
     if (formData.precio_venta === '' || Number(formData.precio_venta) < 0)
@@ -98,9 +135,9 @@ export default function Productos() {
       Number(formData.precio_venta) < Number(formData.precio_compra)
     )
       errors.precio_venta = 'El precio de venta no puede ser menor al de compra';
-    if (formData.stock === '' || Number(formData.stock) < 0)
+    if (formData.tipo !== 'servicio' && (formData.stock === '' || Number(formData.stock) < 0))
       errors.stock = 'Ingresa un stock válido (mínimo 0)';
-    if (formData.stock_minimo === '' || Number(formData.stock_minimo) < 0)
+    if (formData.tipo !== 'servicio' && (formData.stock_minimo === '' || Number(formData.stock_minimo) < 0))
       errors.stock_minimo = 'Ingresa un stock mínimo válido';
     return errors;
   };
@@ -116,14 +153,20 @@ export default function Productos() {
     setFormErrors({});
     setSubmitting(true);
     try {
+      const payload = {
+        ...formData,
+        stock: formData.tipo === 'servicio' ? 0 : formData.stock,
+        stock_minimo: formData.tipo === 'servicio' ? 0 : formData.stock_minimo,
+      };
+
       if (editingId) {
-        await productosService.update(editingId, formData);
+        await productosService.update(editingId, payload);
         addToast('Producto actualizado correctamente', 'success');
       } else {
-        await productosService.create(formData);
+        await productosService.create(payload);
         addToast('Producto creado correctamente', 'success');
       }
-      loadProductos(busqueda);
+      loadProductos(busqueda, filtroTipo);
       resetForm();
     } catch (error) {
       addToast(error.response?.data?.error || 'Error al guardar el producto', 'error');
@@ -137,7 +180,7 @@ export default function Productos() {
     try {
       await productosService.delete(deleteConfirm.id);
       addToast(`Producto "${deleteConfirm.nombre}" eliminado`, 'success');
-      loadProductos(busqueda);
+      loadProductos(busqueda, filtroTipo);
     } catch (error) {
       addToast(error.response?.data?.error || 'Error al eliminar el producto', 'error');
     } finally {
@@ -149,6 +192,7 @@ export default function Productos() {
     setFormData({
       nombre: producto.nombre,
       categoria_id: producto.categoria_id,
+      tipo: producto.tipo || 'producto',
       precio_compra: producto.precio_compra,
       precio_venta: producto.precio_venta,
       stock: producto.stock,
@@ -188,7 +232,7 @@ export default function Productos() {
     try {
       await productosService.uploadImage(productoId, file);
       addToast('Imagen actualizada correctamente', 'success');
-      loadProductos(busqueda);
+      loadProductos(busqueda, filtroTipo);
     } catch {
       addToast('Error al subir la imagen', 'error');
     }
@@ -270,6 +314,13 @@ export default function Productos() {
           >
             <ScanBarcode size={20} />
           </Button>
+          <Button
+            variant={scannerGunMode ? 'default' : 'outline'}
+            onClick={() => setScannerGunMode((s) => !s)}
+            title="Modo escáner pistola (USB/Bluetooth HID)"
+          >
+            Pistola {scannerGunMode ? 'ON' : 'OFF'}
+          </Button>
         </div>
         <Button
           onClick={() => {
@@ -284,6 +335,21 @@ export default function Productos() {
         </Button>
       </div>
 
+      <div className="flex gap-2 flex-wrap">
+        <Button variant={filtroTipo === 'todos' ? 'default' : 'outline'} onClick={() => setFiltroTipo('todos')}>
+          Todos
+        </Button>
+        <Button variant={filtroTipo === 'producto' ? 'default' : 'outline'} onClick={() => setFiltroTipo('producto')}>
+          Productos de venta
+        </Button>
+        <Button variant={filtroTipo === 'insumo' ? 'default' : 'outline'} onClick={() => setFiltroTipo('insumo')}>
+          Insumos
+        </Button>
+        <Button variant={filtroTipo === 'servicio' ? 'default' : 'outline'} onClick={() => setFiltroTipo('servicio')}>
+          Servicios
+        </Button>
+      </div>
+
       {/* Products table */}
       <Card>
         <CardContent className="p-0">
@@ -294,6 +360,7 @@ export default function Productos() {
                 <TableHead>Código</TableHead>
                 <TableHead>Cód. Barras</TableHead>
                 <TableHead>Nombre</TableHead>
+                <TableHead>Tipo</TableHead>
                 <TableHead>Categoría</TableHead>
                 <TableHead>P. Compra</TableHead>
                 <TableHead>P. Venta</TableHead>
@@ -304,7 +371,7 @@ export default function Productos() {
             <TableBody>
               {productos.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={9} className="text-center py-12 text-muted-foreground">
+                  <TableCell colSpan={10} className="text-center py-12 text-muted-foreground">
                     No se encontraron productos
                   </TableCell>
                 </TableRow>
@@ -327,18 +394,21 @@ export default function Productos() {
                     <TableCell className="font-mono text-xs">{producto.codigo_qr}</TableCell>
                     <TableCell className="font-mono text-xs">{producto.codigo_barras || '—'}</TableCell>
                     <TableCell className="font-medium">{producto.nombre}</TableCell>
+                    <TableCell className="capitalize">{producto.tipo || 'producto'}</TableCell>
                     <TableCell>{producto.categoria_nombre}</TableCell>
                     <TableCell>{formatCurrency(producto.precio_compra)}</TableCell>
                     <TableCell>{formatCurrency(producto.precio_venta)}</TableCell>
                     <TableCell>
                       <span
                         className={`px-2 py-1 rounded text-sm font-medium ${
-                          producto.stock <= producto.stock_minimo
+                          producto.tipo === 'servicio'
+                            ? 'bg-blue-100 text-blue-800'
+                            : producto.stock <= producto.stock_minimo
                             ? 'bg-red-100 text-red-800'
                             : 'bg-green-100 text-green-800'
                         }`}
                       >
-                        {producto.stock}
+                        {producto.tipo === 'servicio' ? 'N/A' : producto.stock}
                       </span>
                     </TableCell>
                     <TableCell>
@@ -462,6 +532,34 @@ export default function Productos() {
                     )}
                   </div>
 
+                  {/* Tipo */}
+                  <div>
+                    <label className="text-sm font-medium">
+                      Tipo <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 ${
+                        formErrors.tipo ? 'border-red-400' : 'border-input'
+                      }`}
+                      value={formData.tipo}
+                      onChange={(e) => {
+                        const tipo = e.target.value;
+                        setFormData((p) => ({
+                          ...p,
+                          tipo,
+                          stock: tipo === 'servicio' ? '0' : p.stock,
+                          stock_minimo: tipo === 'servicio' ? '0' : p.stock_minimo,
+                        }));
+                        if (formErrors.tipo) setFormErrors((p) => ({ ...p, tipo: undefined }));
+                      }}
+                    >
+                      <option value="producto">Producto de venta</option>
+                      <option value="insumo">Insumo</option>
+                      <option value="servicio">Servicio</option>
+                    </select>
+                    {formErrors.tipo && <p className="text-xs text-red-500 mt-1">{formErrors.tipo}</p>}
+                  </div>
+
                   {/* Precio Compra */}
                   <div>
                     <label className="text-sm font-medium">
@@ -508,6 +606,7 @@ export default function Productos() {
                       min="0"
                       placeholder="0"
                       className={formErrors.stock ? 'border-red-400' : ''}
+                      disabled={formData.tipo === 'servicio'}
                       {...fieldProps('stock')}
                     />
                     {formErrors.stock && (
@@ -525,6 +624,7 @@ export default function Productos() {
                       min="0"
                       placeholder="5"
                       className={formErrors.stock_minimo ? 'border-red-400' : ''}
+                      disabled={formData.tipo === 'servicio'}
                       {...fieldProps('stock_minimo')}
                     />
                     {formErrors.stock_minimo && (

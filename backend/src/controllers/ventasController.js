@@ -189,7 +189,7 @@ let partes = splitText(toAsciiLocal(item.producto_nombre), 17);
 
   async create(req, res) {
     try {
-      const { productos, descuento, metodo_pago = 'efectivo', monto_recibido = 0 } = req.body;
+      const { productos, descuento, metodo_pago = 'efectivo', monto_recibido = 0, cliente_id = null } = req.body;
       const usuario_id = req.user.id;
 
       if (!productos || productos.length === 0) {
@@ -205,7 +205,13 @@ let partes = splitText(toAsciiLocal(item.producto_nombre), 17);
           return res.status(404).json({ error: `Producto ${item.producto_id} no encontrado` });
         }
 
-        if (producto.stock < item.cantidad) {
+        if (producto.tipo === 'insumo') {
+          return res.status(400).json({
+            error: `"${producto.nombre}" es un insumo y no puede venderse directamente`
+          });
+        }
+
+        if (producto.tipo !== 'servicio' && producto.stock < item.cantidad) {
           return res.status(400).json({ 
             error: `Stock insuficiente para ${producto.nombre}. Disponible: ${producto.stock}` 
           });
@@ -221,8 +227,8 @@ let partes = splitText(toAsciiLocal(item.producto_nombre), 17);
 
       // Crear venta con fecha local
       const ventaResult = await db.run(
-        'INSERT INTO ventas (usuario_id, subtotal, descuento, total, metodo_pago, monto_recibido, cambio, fecha) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        [usuario_id, subtotal, descuentoMonto, total, metodo_pago, montoFinal, cambio, fechaLocal()]
+        'INSERT INTO ventas (usuario_id, cliente_id, subtotal, descuento, total, metodo_pago, monto_recibido, cambio, fecha) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [usuario_id, cliente_id || null, subtotal, descuentoMonto, total, metodo_pago, montoFinal, cambio, fechaLocal()]
       );
 
       const venta_id = ventaResult.id;
@@ -238,11 +244,17 @@ let partes = splitText(toAsciiLocal(item.producto_nombre), 17);
           [venta_id, item.producto_id, item.cantidad, producto.precio_venta, itemSubtotal]
         );
 
-        // Actualizar stock
-        await db.run(
-          'UPDATE productos SET stock = stock - ? WHERE id = ?',
-          [item.cantidad, item.producto_id]
-        );
+        // Actualizar stock solo para productos físicos
+        if (producto.tipo !== 'servicio') {
+          await db.run(
+            'UPDATE productos SET stock = stock - ? WHERE id = ?',
+            [item.cantidad, item.producto_id]
+          );
+        }
+      }
+
+      if (cliente_id) {
+        await db.run('UPDATE clientes SET ultima_visita = ? WHERE id = ?', [fechaLocal(), cliente_id]);
       }
 
       // Obtener venta completa con detalles

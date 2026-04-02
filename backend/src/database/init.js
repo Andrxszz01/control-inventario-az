@@ -64,6 +64,22 @@ async function initDatabase() {
       // La columna ya existe, ignorar
     }
 
+    // Agregar columna cliente_id a ventas si no existe (migración)
+    try {
+      await db.run(`ALTER TABLE ventas ADD COLUMN cliente_id INTEGER`);
+      console.log('✅ Columna cliente_id agregada a ventas');
+    } catch (e) {
+      // La columna ya existe, ignorar
+    }
+
+    // Agregar columna estado a ventas si no existe (migración)
+    try {
+      await db.run(`ALTER TABLE ventas ADD COLUMN estado TEXT DEFAULT 'pagada'`);
+      console.log('✅ Columna estado agregada a ventas');
+    } catch (e) {
+      // La columna ya existe, ignorar
+    }
+
     // Tabla de categorías
     await db.run(`
       CREATE TABLE IF NOT EXISTS categorias (
@@ -81,6 +97,7 @@ async function initDatabase() {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nombre TEXT NOT NULL,
         categoria_id INTEGER,
+        tipo TEXT NOT NULL DEFAULT 'producto' CHECK(tipo IN ('producto','insumo','servicio')),
         codigo_qr TEXT UNIQUE,
         precio_compra REAL NOT NULL,
         precio_venta REAL NOT NULL,
@@ -103,10 +120,37 @@ async function initDatabase() {
         telefono TEXT,
         direccion TEXT,
         email TEXT,
+        tipo TEXT NOT NULL DEFAULT 'cliente' CHECK(tipo IN ('cliente','paciente')),
+        notas TEXT DEFAULT '',
+        alergias TEXT DEFAULT '',
+        observaciones TEXT DEFAULT '',
+        ultima_visita DATETIME,
         fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
     console.log('✅ Tabla clientes creada');
+
+    // Migration: add extra profile fields to clientes if missing
+    try {
+      await db.run("ALTER TABLE clientes ADD COLUMN tipo TEXT NOT NULL DEFAULT 'cliente'");
+      console.log('✅ Columna tipo agregada a clientes');
+    } catch (e) { /* column already exists */ }
+    try {
+      await db.run("ALTER TABLE clientes ADD COLUMN notas TEXT DEFAULT ''");
+      console.log('✅ Columna notas agregada a clientes');
+    } catch (e) { /* column already exists */ }
+    try {
+      await db.run("ALTER TABLE clientes ADD COLUMN alergias TEXT DEFAULT ''");
+      console.log('✅ Columna alergias agregada a clientes');
+    } catch (e) { /* column already exists */ }
+    try {
+      await db.run("ALTER TABLE clientes ADD COLUMN observaciones TEXT DEFAULT ''");
+      console.log('✅ Columna observaciones agregada a clientes');
+    } catch (e) { /* column already exists */ }
+    try {
+      await db.run("ALTER TABLE clientes ADD COLUMN ultima_visita DATETIME");
+      console.log('✅ Columna ultima_visita agregada a clientes');
+    } catch (e) { /* column already exists */ }
 
     // Tabla de ventas (agrega cliente_id y estado)
     await db.run(`
@@ -197,6 +241,12 @@ async function initDatabase() {
     try {
       await db.run("ALTER TABLE productos ADD COLUMN codigo_barras TEXT DEFAULT ''");
       console.log('✅ Columna codigo_barras agregada a productos');
+    } catch (e) { /* column already exists */ }
+
+    // Migration: add tipo to productos if missing
+    try {
+      await db.run("ALTER TABLE productos ADD COLUMN tipo TEXT NOT NULL DEFAULT 'producto'");
+      console.log('✅ Columna tipo agregada a productos');
     } catch (e) { /* column already exists */ }
 
     // Insertar datos iniciales

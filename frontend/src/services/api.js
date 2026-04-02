@@ -81,6 +81,17 @@ export const categoriasService = {
   delete: (id) => api.delete(`/categorias/${id}`),
 };
 
+// Clientes
+export const clientesService = {
+  getAll: () => api.get('/clientes'),
+  getById: (id) => api.get(`/clientes/${id}`),
+  create: (data) => api.post('/clientes', data),
+  update: (id, data) => api.put(`/clientes/${id}`, data),
+  delete: (id) => api.delete(`/clientes/${id}`),
+  getVentas: (id) => api.get(`/clientes/${id}/ventas`),
+  getEstadoCuenta: (id) => api.get(`/clientes/${id}/estado-cuenta`),
+};
+
 // Ventas
 export const ventasService = {
   create: (data) => api.post('/ventas', data),

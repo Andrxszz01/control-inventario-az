@@ -3,13 +3,36 @@ const db = require('../database/connection');
 // CRUD Clientes
 exports.crearCliente = async (req, res) => {
   try {
-    const { nombre, telefono, direccion, email } = req.body;
+    const {
+      nombre,
+      telefono,
+      direccion,
+      email,
+      tipo = 'cliente',
+      notas = '',
+      alergias = '',
+      observaciones = '',
+      ultima_visita = null,
+    } = req.body;
     if (!nombre) return res.status(400).json({ error: 'Nombre requerido' });
     const result = await db.run(
-      'INSERT INTO clientes (nombre, telefono, direccion, email) VALUES (?, ?, ?, ?)',
-      [nombre, telefono, direccion, email]
+      `INSERT INTO clientes
+      (nombre, telefono, direccion, email, tipo, notas, alergias, observaciones, ultima_visita)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [nombre, telefono, direccion, email, tipo, notas, alergias, observaciones, ultima_visita]
     );
-    res.json({ id: result.lastID, nombre, telefono, direccion, email });
+    res.json({
+      id: result.lastID,
+      nombre,
+      telefono,
+      direccion,
+      email,
+      tipo,
+      notas,
+      alergias,
+      observaciones,
+      ultima_visita,
+    });
   } catch (e) {
     res.status(500).json({ error: 'Error al crear cliente' });
   }
@@ -38,12 +61,35 @@ exports.obtenerCliente = async (req, res) => {
 exports.actualizarCliente = async (req, res) => {
   try {
     const { id } = req.params;
-    const { nombre, telefono, direccion, email } = req.body;
+    const {
+      nombre,
+      telefono,
+      direccion,
+      email,
+      tipo = 'cliente',
+      notas = '',
+      alergias = '',
+      observaciones = '',
+      ultima_visita = null,
+    } = req.body;
     await db.run(
-      'UPDATE clientes SET nombre=?, telefono=?, direccion=?, email=? WHERE id=?',
-      [nombre, telefono, direccion, email, id]
+      `UPDATE clientes
+       SET nombre=?, telefono=?, direccion=?, email=?, tipo=?, notas=?, alergias=?, observaciones=?, ultima_visita=?
+       WHERE id=?`,
+      [nombre, telefono, direccion, email, tipo, notas, alergias, observaciones, ultima_visita, id]
     );
-    res.json({ id, nombre, telefono, direccion, email });
+    res.json({
+      id,
+      nombre,
+      telefono,
+      direccion,
+      email,
+      tipo,
+      notas,
+      alergias,
+      observaciones,
+      ultima_visita,
+    });
   } catch (e) {
     res.status(500).json({ error: 'Error al actualizar cliente' });
   }
