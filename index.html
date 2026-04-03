@@ -27,8 +27,6 @@
         radial-gradient(circle at 0% 18%, #d9ecff 0%, rgba(217, 236, 255, 0) 35%),
         var(--bg);
       overflow-x: hidden;
-      display: grid;
-      place-items: center;
       padding: 20px;
     }
 
@@ -57,6 +55,7 @@
 
     .shell {
       width: min(1020px, 100%);
+      margin: 0 auto;
       background: linear-gradient(135deg, #ffffff 0%, #fefaf5 100%);
       border: 1px solid #d4dfeb;
       border-radius: 30px;
@@ -261,7 +260,104 @@
       color: #334155;
     }
 
+    .pricing-section {
+      margin: 28px 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #f0f8ff 0%, #fff6eb 100%);
+      border-radius: 16px;
+      border: 1px solid #dbe2ea;
+    }
+
+    .pricing-title {
+      margin: 0 0 16px;
+      color: #12496f;
+      font-size: 1.4rem;
+      text-align: center;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .pricing-card {
+      border: 1px solid #dbe2ea;
+      border-radius: 12px;
+      padding: 16px;
+      background: #fff;
+      text-align: center;
+    }
+
+    .pricing-card.featured {
+      border: 2px solid #ff7a1a;
+      background: linear-gradient(135deg, #fff6eb, #fffaf4);
+    }
+
+    .pricing-badge {
+      background: #ff7a1a;
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      display: inline-block;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .pricing-name {
+      color: #12496f;
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .pricing-sub {
+      margin: 0 0 12px;
+      color: #526173;
+      font-size: 0.9rem;
+    }
+
+    .pricing-value {
+      font-size: 2rem;
+      font-weight: 900;
+      color: #ff7a1a;
+      margin: 8px 0;
+    }
+
+    .pricing-term {
+      margin: 0;
+      color: #526173;
+      font-size: 0.85rem;
+    }
+
+    .plan-btn {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 9px 14px;
+      border-radius: 10px;
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.86rem;
+      font-weight: 700;
+      background: #12496f;
+    }
+
+    .plan-btn.featured {
+      background: #ff7a1a;
+    }
+
+    .pricing-note {
+      text-align: center;
+      color: #526173;
+      font-size: 0.9rem;
+      margin: 12px 0 0;
+    }
+
     @media (max-width: 700px) {
+      body { padding: 10px; }
       .shell { padding: 10px; border-radius: 22px; }
       .deck { grid-template-columns: 1fr; }
       .left { padding: 20px; }
@@ -269,6 +365,9 @@
       .menu-grid { grid-template-columns: 1fr; }
       .menu-item { grid-template-columns: 44px 1fr; padding: 13px; }
       .menu-icon { width: 44px; height: 44px; font-size: .95rem; }
+      .pricing-section { margin: 20px 0; padding: 14px; }
+      .pricing-title { font-size: 1.2rem; }
+      .pricing-grid { grid-template-columns: 1fr; gap: 10px; }
     }
   </style>
 </head>
@@ -288,33 +387,33 @@
         <h1>Menu Principal</h1>
         <p class="lead">Seleccione una opcion para ver la informacion del sistema.</p>
         
-        <section style="margin: 28px 0; padding: 20px; background: linear-gradient(135deg, #f0f8ff 0%, #fff6eb 100%); border-radius: 16px; border: 1px solid #dbe2ea;">
-          <h2 style="margin: 0 0 16px; color: #12496f; font-size: 1.4rem; text-align: center;">PLANES Y PRECIOS</h2>
-          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 16px;">
-            <div style="border: 1px solid #dbe2ea; border-radius: 12px; padding: 16px; background: white; text-align: center;">
-              <strong style="color: #12496f; display: block; margin-bottom: 8px; font-size: 1.1rem;">VERSIÓN ESCRITORIO</strong>
-              <p style="margin: 0; color: #526173; font-size: 0.9rem; margin-bottom: 12px;">Windows 7 en adelante</p>
-              <div style="font-size: 2rem; font-weight: 900; color: #ff7a1a; margin: 8px 0;">$999</div>
-              <p style="margin: 0; color: #526173; font-size: 0.85rem;">Pago único de por vida</p>
-              <a href="plan-escritorio.html" style="display: inline-block; margin-top: 12px; padding: 9px 14px; border-radius: 10px; background: #12496f; color: #fff; text-decoration: none; font-size: 0.86rem; font-weight: 700;">Seleccionar plan</a>
+        <section class="pricing-section">
+          <h2 class="pricing-title">PLANES Y PRECIOS</h2>
+          <div class="pricing-grid">
+            <div class="pricing-card">
+              <strong class="pricing-name">VERSIÓN ESCRITORIO</strong>
+              <p class="pricing-sub">Windows 7 en adelante</p>
+              <div class="pricing-value">$999</div>
+              <p class="pricing-term">Pago único de por vida</p>
+              <a href="plan-escritorio.html" class="plan-btn">Seleccionar plan</a>
             </div>
-            <div style="border: 1px solid #dbe2ea; border-radius: 12px; padding: 16px; background: white; text-align: center;">
-              <strong style="color: #12496f; display: block; margin-bottom: 8px; font-size: 1.1rem;">VERSIÓN ANDROID</strong>
-              <p style="margin: 0; color: #526173; font-size: 0.9rem; margin-bottom: 12px;">Android 8.0 en adelante</p>
-              <div style="font-size: 2rem; font-weight: 900; color: #ff7a1a; margin: 8px 0;">$999</div>
-              <p style="margin: 0; color: #526173; font-size: 0.85rem;">Pago único de por vida</p>
-              <a href="plan-android.html" style="display: inline-block; margin-top: 12px; padding: 9px 14px; border-radius: 10px; background: #12496f; color: #fff; text-decoration: none; font-size: 0.86rem; font-weight: 700;">Seleccionar plan</a>
+            <div class="pricing-card">
+              <strong class="pricing-name">VERSIÓN ANDROID</strong>
+              <p class="pricing-sub">Android 8.0 en adelante</p>
+              <div class="pricing-value">$999</div>
+              <p class="pricing-term">Pago único de por vida</p>
+              <a href="plan-android.html" class="plan-btn">Seleccionar plan</a>
             </div>
-            <div style="border: 2px solid #ff7a1a; border-radius: 12px; padding: 16px; background: linear-gradient(135deg, #fff6eb, #fffaf4); text-align: center;">
-              <strong style="background: #ff7a1a; color: white; padding: 4px 8px; border-radius: 999px; font-size: 0.75rem; display: inline-block; margin-bottom: 8px;">MEJOR OFERTA</strong>
-              <strong style="color: #12496f; display: block; margin: 8px 0; font-size: 1.1rem;">AMBOS PAQUETES</strong>
-              <p style="margin: 0; color: #526173; font-size: 0.9rem; margin-bottom: 12px;">Escritorio + Android</p>
-              <div style="font-size: 2rem; font-weight: 900; color: #ff7a1a; margin: 8px 0;">$1,499</div>
-              <p style="margin: 0; color: #526173; font-size: 0.85rem;">Pago único de por vida</p>
-              <a href="plan-completo.html" style="display: inline-block; margin-top: 12px; padding: 9px 14px; border-radius: 10px; background: #ff7a1a; color: #fff; text-decoration: none; font-size: 0.86rem; font-weight: 700;">Seleccionar plan</a>
+            <div class="pricing-card featured">
+              <strong class="pricing-badge">MEJOR OFERTA</strong>
+              <strong class="pricing-name">AMBOS PAQUETES</strong>
+              <p class="pricing-sub">Escritorio + Android</p>
+              <div class="pricing-value">$1,499</div>
+              <p class="pricing-term">Pago único de por vida</p>
+              <a href="plan-completo.html" class="plan-btn featured">Seleccionar plan</a>
             </div>
           </div>
-          <p style="text-align: center; color: #526173; font-size: 0.9rem; margin: 12px 0 0;">Contacta para más información sobre implementación y soporte técnico.</p>
+          <p class="pricing-note">Contacta para más información sobre implementación y soporte técnico.</p>
         </section>
         
         <div class="menu-grid">
