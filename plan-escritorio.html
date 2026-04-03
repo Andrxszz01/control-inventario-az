@@ -13,6 +13,7 @@
       --accent: #ff7a1a;
       --line: #dbe2ea;
       --card: #ffffff;
+      --ok: #25D366;
     }
     * { box-sizing: border-box; }
     body {
@@ -21,10 +22,10 @@
       font-family: "Segoe UI", "Trebuchet MS", Verdana, sans-serif;
       background: radial-gradient(circle at 95% 0%, #ffd9b6 0%, rgba(255, 217, 182, 0) 35%), var(--bg);
       min-height: 100vh;
-      padding: 22px 14px;
+      padding: 16px 12px;
     }
     .container {
-      max-width: 920px;
+      max-width: 940px;
       margin: 0 auto;
     }
     .card {
@@ -32,7 +33,7 @@
       border: 1px solid var(--line);
       border-radius: 18px;
       box-shadow: 0 16px 30px rgba(10, 28, 48, 0.1);
-      padding: 24px;
+      padding: 22px;
     }
     .head {
       border-bottom: 1px solid var(--line);
@@ -42,7 +43,7 @@
     h1 {
       margin: 0;
       color: var(--brand);
-      font-size: clamp(1.4rem, 2.8vw, 2rem);
+      font-size: clamp(1.3rem, 2.8vw, 2rem);
     }
     .price {
       margin-top: 8px;
@@ -54,6 +55,17 @@
       margin: 6px 0 0;
       color: var(--muted);
       font-size: .95rem;
+    }
+    .pill {
+      margin-top: 10px;
+      display: inline-block;
+      background: #eef6ff;
+      border: 1px solid #cfe2f6;
+      color: #18466a;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: .78rem;
+      font-weight: 700;
     }
     .grid {
       margin-top: 14px;
@@ -79,8 +91,40 @@
       color: #30465e;
     }
     .row strong { color: #0f3551; }
+    .copy {
+      margin-left: 8px;
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      color: #0f3551;
+      border-radius: 8px;
+      font-size: .75rem;
+      padding: 4px 7px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .policy,
+    .faq {
+      margin-top: 12px;
+      border: 1px dashed #cfd9e6;
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+    }
+    .policy h3,
+    .faq h3 {
+      margin: 0 0 8px;
+      color: #123f61;
+      font-size: .97rem;
+    }
+    .policy p,
+    .faq p {
+      margin: 0 0 6px;
+      color: #4f6074;
+      font-size: .88rem;
+      line-height: 1.45;
+    }
     .cta {
-      margin-top: 18px;
+      margin-top: 16px;
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
@@ -90,21 +134,35 @@
       border-radius: 10px;
       padding: 11px 16px;
       font-weight: 700;
-      font-size: .92rem;
+      font-size: .9rem;
       border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
     }
     .btn-primary {
-      background: #25D366;
+      background: var(--ok);
       color: #083b22;
+      flex: 1 1 320px;
     }
     .btn-secondary {
       background: #fff;
       color: var(--brand);
       border-color: var(--line);
+      flex: 1 1 220px;
+    }
+    .btn-tertiary {
+      background: #fff;
+      color: #0f3551;
+      border-color: #cfd9e6;
+      flex: 1 1 220px;
     }
     @media (max-width: 760px) {
       .grid { grid-template-columns: 1fr; }
-      .card { padding: 18px; }
+      .card { padding: 16px; }
+      .cta { flex-direction: column; }
+      .btn { width: 100%; }
     }
   </style>
 </head>
@@ -114,30 +172,55 @@
       <div class="head">
         <h1>Plan Escritorio</h1>
         <div class="price">$999 MXN</div>
-        <p class="muted">Pago unico de por vida. Plataforma Windows.</p>
+        <p class="muted">Licencia para Windows. Pago unico.</p>
+        <span class="pill">Plan seleccionado: Escritorio</span>
       </div>
 
       <div class="grid">
         <article class="bank">
           <h2>Nu Mexico</h2>
           <div class="row"><strong>Nombre:</strong> Andres Manuel Lopez Zarate</div>
-          <div class="row"><strong>CLABE:</strong> 6381 8001 0174 6301 41</div>
-          <div class="row"><strong>Depositos en efectivo:</strong> 5195 3785 7882 6125</div>
+          <div class="row"><strong>CLABE:</strong> 6381 8001 0174 6301 41 <button class="copy" onclick="copyText('638180010174630141')">Copiar</button></div>
+          <div class="row"><strong>Depositos en efectivo:</strong> 5195 3785 7882 6125 <button class="copy" onclick="copyText('5195378578826125')">Copiar</button></div>
           <div class="row"><strong>Entidad financiera:</strong> Nu Mexico</div>
         </article>
 
         <article class="bank">
           <h2>BBVA</h2>
           <div class="row"><strong>Nombre:</strong> Andres Manuel Lopez Zarate</div>
-          <div class="row"><strong>Tarjeta de debito:</strong> 4152 3141 2512 6378</div>
+          <div class="row"><strong>Tarjeta de debito:</strong> 4152 3141 2512 6378 <button class="copy" onclick="copyText('4152314125126378')">Copiar</button></div>
         </article>
       </div>
 
+      <div class="policy">
+        <h3>Activacion y confirmacion</h3>
+        <p>1. Realiza el pago por $999 MXN.</p>
+        <p>2. Envia comprobante por WhatsApp con tu nombre y correo.</p>
+        <p>3. La activacion se confirma por el mismo canal en horario de atencion.</p>
+      </div>
+
+      <div class="faq">
+        <h3>Preguntas frecuentes</h3>
+        <p><strong>Que incluye:</strong> Instalador de Escritorio y soporte de activacion inicial.</p>
+        <p><strong>Si cambio de equipo:</strong> Se realiza reactivacion por WhatsApp.</p>
+      </div>
+
       <div class="cta">
-        <a class="btn btn-primary" href="https://wa.me/526471200790?text=Hola%2C%20ya%20realice%20mi%20pago%20del%20Plan%20Escritorio%20%28999%20MXN%29%20de%20Control%20de%20Inventario%20AZ.%20Comparto%20mi%20comprobante%20para%20activacion." target="_blank" rel="noopener noreferrer">Ya realice mi pago del Plan Escritorio por WhatsApp</a>
-        <a class="btn btn-secondary" href="index.html">Volver al menu principal</a>
+        <a class="btn btn-primary" href="https://wa.me/526471200790?text=Hola%2C%20ya%20realice%20mi%20pago%20del%20Plan%20Escritorio%20%28999%20MXN%29%20de%20Control%20de%20Inventario%20AZ.%20Comparto%20mi%20comprobante%20para%20activacion." target="_blank" rel="noopener noreferrer">Ya realice mi pago - Plan Escritorio</a>
+        <a class="btn btn-secondary" href="https://wa.me/526471200790?text=Hola%2C%20tengo%20una%20consulta%20antes%20de%20realizar%20el%20pago%20del%20Plan%20Escritorio." target="_blank" rel="noopener noreferrer">Hablar antes de pagar</a>
+        <a class="btn btn-tertiary" href="index.html">Volver al menu principal</a>
       </div>
     </section>
   </main>
+
+  <script>
+    function copyText(value) {
+      navigator.clipboard.writeText(value).then(function () {
+        alert('Dato copiado: ' + value);
+      }).catch(function () {
+        alert('No se pudo copiar automaticamente.');
+      });
+    }
+  </script>
 </body>
 </html>
