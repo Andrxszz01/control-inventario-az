@@ -1,453 +1,236 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Control de Inventario AZ</title>
-  <style>
-    :root {
-      --bg: #f7f4ef;
-      --ink: #1f2937;
-      --muted: #526173;
-      --brand: #12496f;
-      --accent: #ff7a1a;
-      --line: #dbe2ea;
-      --card: #ffffff;
-      --soft: #fff6eb;
-      --deep: #0f3551;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: "Segoe UI", "Trebuchet MS", Verdana, sans-serif;
-      color: var(--ink);
-      background:
-        radial-gradient(circle at 95% 0%, #ffd9b6 0%, rgba(255, 217, 182, 0) 35%),
-        radial-gradient(circle at 0% 18%, #d9ecff 0%, rgba(217, 236, 255, 0) 35%),
-        var(--bg);
-      overflow-x: hidden;
-      padding: 20px;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Catalogo de Proyectos | Andres Zarate</title>
+    <meta name="description" content="Catalogo publico de proyectos de software para operacion comercial, inventario y gestion de negocios." />
+    <style>
+      :root {
+        --bg: #09111f;
+        --panel: rgba(16, 22, 35, 0.86);
+        --line: rgba(255, 255, 255, 0.08);
+        --text: #f5f7fb;
+        --muted: #98a3b7;
+        --gold: #d6b46d;
+        --blue: #70b2ff;
+        --shadow: 0 24px 70px rgba(0, 0, 0, 0.36);
+      }
 
-    .aura {
-      position: fixed;
-      z-index: -1;
-      border-radius: 999px;
-      filter: blur(10px);
-      opacity: .35;
-      pointer-events: none;
-    }
-    .aura.one {
-      width: 320px;
-      height: 320px;
-      top: -90px;
-      right: -120px;
-      background: radial-gradient(circle at 40% 40%, #ffbf86, rgba(255, 191, 134, 0));
-    }
-    .aura.two {
-      width: 280px;
-      height: 280px;
-      bottom: -80px;
-      left: -90px;
-      background: radial-gradient(circle at 45% 45%, #9fcfff, rgba(159, 207, 255, 0));
-    }
+      * { box-sizing: border-box; }
 
-    .shell {
-      width: min(1020px, 100%);
-      margin: 0 auto;
-      background: linear-gradient(135deg, #ffffff 0%, #fefaf5 100%);
-      border: 1px solid #d4dfeb;
-      border-radius: 30px;
-      padding: 14px;
-      box-shadow: 0 20px 46px rgba(10, 28, 48, 0.14);
-      position: relative;
-      overflow: hidden;
-    }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(214, 180, 109, 0.14), transparent 24%),
+          radial-gradient(circle at bottom right, rgba(112, 178, 255, 0.14), transparent 24%),
+          linear-gradient(160deg, #08101d 0%, #0b1423 46%, #101827 100%);
+      }
 
-    .deck {
-      border-radius: 22px;
-      border: 1px solid var(--line);
-      background: #fff;
-      overflow: hidden;
-      display: grid;
-      grid-template-columns: 320px 1fr;
-      min-height: 540px;
-    }
+      a { color: inherit; text-decoration: none; }
 
-    .left {
-      background: linear-gradient(165deg, var(--deep) 0%, var(--brand) 48%, #1a638f 100%);
-      color: #fff;
-      padding: 24px;
-      position: relative;
-      isolation: isolate;
-    }
+      .shell {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 28px 0 64px;
+      }
 
-    .left::before {
-      content: "";
-      position: absolute;
-      inset: auto -30px -80px auto;
-      width: 190px;
-      height: 190px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 40% 40%, rgba(255, 170, 108, 0.45), rgba(255, 170, 108, 0));
-      z-index: -1;
-    }
+      .hero {
+        border: 1px solid var(--line);
+        border-radius: 34px;
+        padding: 38px;
+        background: linear-gradient(145deg, rgba(13, 19, 31, 0.88), rgba(18, 25, 39, 0.94));
+        box-shadow: var(--shadow);
+      }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-size: .72rem;
-      text-transform: uppercase;
-      letter-spacing: .07em;
-      font-weight: 800;
-      background: rgba(255, 255, 255, 0.1);
-    }
+      .eyebrow {
+        margin: 0;
+        font-size: 12px;
+        letter-spacing: 0.36em;
+        text-transform: uppercase;
+        color: var(--gold);
+      }
 
-    .logo-mark {
-      margin-top: 14px;
-      width: 100%;
-      border-radius: 18px;
-      border: 1px solid rgba(255, 255, 255, 0.24);
-      background: linear-gradient(140deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04));
-      padding: 14px;
-    }
+      h1 {
+        margin: 18px 0 14px;
+        max-width: 760px;
+        font-family: Poppins, Inter, sans-serif;
+        font-size: clamp(38px, 6vw, 70px);
+        line-height: 0.96;
+      }
 
-    .logo-mark strong {
-      display: block;
-      font-size: 2rem;
-      line-height: 1;
-      letter-spacing: .02em;
-      font-weight: 900;
-    }
+      .hero p:last-child {
+        margin: 0;
+        max-width: 760px;
+        color: var(--muted);
+        font-size: 18px;
+        line-height: 1.75;
+      }
 
-    .logo-mark span {
-      display: block;
-      margin-top: 8px;
-      font-size: .84rem;
-      line-height: 1.45;
-      color: #d6ecff;
-    }
+      .projects {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px;
+        margin-top: 26px;
+      }
 
-    .left ul {
-      margin: 18px 0 0;
-      padding: 0;
-      list-style: none;
-      display: grid;
-      gap: 8px;
-    }
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 30px;
+        padding: 28px;
+        background: linear-gradient(180deg, rgba(18, 24, 38, 0.9), rgba(10, 14, 24, 0.92));
+        box-shadow: var(--shadow);
+      }
 
-    .left li {
-      font-size: .86rem;
-      color: #e9f5ff;
-      border-left: 2px solid rgba(255, 255, 255, 0.3);
-      padding-left: 10px;
-    }
+      .card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
 
-    .right {
-      padding: 26px;
-      background: linear-gradient(180deg, #ffffff 0%, #fffaf4 100%);
-    }
+      .mark {
+        width: 64px;
+        height: 64px;
+        border-radius: 22px;
+        display: grid;
+        place-items: center;
+        font-family: Poppins, Inter, sans-serif;
+        font-size: 24px;
+        font-weight: 700;
+        color: #10141d;
+      }
 
-    h1 {
-      margin: 0;
-      color: var(--brand);
-      font-size: clamp(1.55rem, 3vw, 2.3rem);
-      line-height: 1.12;
-      letter-spacing: -0.02em;
-    }
+      .mark.az { background: linear-gradient(135deg, #71b6ff, #d9ecff); }
+      .mark.beauty { background: linear-gradient(135deg, #d6b46d, #f3dfb1); }
 
-    .lead {
-      margin: 10px 0 0;
-      line-height: 1.55;
-      color: var(--muted);
-      max-width: 620px;
-      font-size: .95rem;
-    }
+      .badge {
+        display: inline-flex;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--muted);
+        font-size: 12px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
 
-    .menu-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-top: 18px;
-    }
+      h2 {
+        margin: 18px 0 8px;
+        font-family: Poppins, Inter, sans-serif;
+        font-size: 34px;
+      }
 
-    .menu-item {
-      text-decoration: none;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 16px 15px;
-      color: var(--ink);
-      background: linear-gradient(135deg, #fffdfb 0%, #fff4e8 100%);
-      display: grid;
-      grid-template-columns: 50px 1fr;
-      gap: 12px;
-      align-items: center;
-      transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease, background .22s ease;
-      position: relative;
-      overflow: hidden;
-    }
+      .summary {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.75;
+      }
 
-    .menu-item::after {
-      content: "";
-      position: absolute;
-      inset: auto -25px -42px auto;
-      width: 120px;
-      height: 120px;
-      border-radius: 999px;
-      background: radial-gradient(circle, rgba(255, 146, 51, 0.16), rgba(255, 146, 51, 0));
-      pointer-events: none;
-    }
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 18px;
+      }
 
-    .menu-item:hover {
-      border-color: #ffbf8e;
-      background: linear-gradient(135deg, #fffdfb 0%, #ffeede 100%);
-      transform: translateY(-3px) scale(1.01);
-      box-shadow: 0 14px 26px rgba(18, 73, 111, .12);
-    }
+      .meta span {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 10px 14px;
+        color: #dbe1ed;
+        font-size: 14px;
+        background: rgba(255, 255, 255, 0.03);
+      }
 
-    .menu-icon {
-      width: 50px;
-      height: 50px;
-      border-radius: 12px;
-      display: grid;
-      place-items: center;
-      font-size: 1rem;
-      font-weight: 800;
-      color: #fff;
-      background: linear-gradient(140deg, #1f6ba0, #12496f);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25);
-    }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 24px;
+      }
 
-    .menu-item:nth-child(2) .menu-icon {
-      background: linear-gradient(140deg, #ff983d, #ff6a00);
-    }
+      .primary,
+      .ghost {
+        padding: 14px 20px;
+        border-radius: 16px;
+        font-weight: 700;
+      }
 
-    .menu-item:nth-child(3) .menu-icon {
-      background: linear-gradient(140deg, #2fa66c, #15803d);
-    }
+      .primary {
+        background: linear-gradient(135deg, var(--gold), #f0deac);
+        color: #141821;
+      }
 
-    .menu-item:nth-child(4) .menu-icon {
-      background: linear-gradient(140deg, #8d67d9, #6546b3);
-    }
+      .ghost {
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.03);
+      }
 
-    .menu-title {
-      margin: 0;
-      font-size: 1rem;
-      font-weight: 800;
-      color: #1f2937;
-      letter-spacing: .01em;
-    }
+      .footer {
+        margin-top: 28px;
+        color: var(--muted);
+        text-align: center;
+        font-size: 14px;
+      }
 
-    .menu-desc {
-      margin: 3px 0 0;
-      font-size: .87rem;
-      line-height: 1.45;
-      color: #5d6f83;
-    }
-
-    .footer-note {
-      margin-top: 14px;
-      border-radius: 12px;
-      border: 1px dashed #c6d5e3;
-      background: var(--soft);
-      padding: 11px 12px;
-      font-size: .83rem;
-      color: #334155;
-    }
-
-    .pricing-section {
-      margin: 28px 0;
-      padding: 20px;
-      background: linear-gradient(135deg, #f0f8ff 0%, #fff6eb 100%);
-      border-radius: 16px;
-      border: 1px solid #dbe2ea;
-    }
-
-    .pricing-title {
-      margin: 0 0 16px;
-      color: #12496f;
-      font-size: 1.4rem;
-      text-align: center;
-    }
-
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-      margin-bottom: 16px;
-    }
-
-    .pricing-card {
-      border: 1px solid #dbe2ea;
-      border-radius: 12px;
-      padding: 16px;
-      background: #fff;
-      text-align: center;
-    }
-
-    .pricing-card.featured {
-      border: 2px solid #ff7a1a;
-      background: linear-gradient(135deg, #fff6eb, #fffaf4);
-    }
-
-    .pricing-badge {
-      background: #ff7a1a;
-      color: #fff;
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      display: inline-block;
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
-
-    .pricing-name {
-      color: #12496f;
-      display: block;
-      margin-bottom: 8px;
-      font-size: 1.1rem;
-      font-weight: 700;
-    }
-
-    .pricing-sub {
-      margin: 0 0 12px;
-      color: #526173;
-      font-size: 0.9rem;
-    }
-
-    .pricing-value {
-      font-size: 2rem;
-      font-weight: 900;
-      color: #ff7a1a;
-      margin: 8px 0;
-    }
-
-    .pricing-term {
-      margin: 0;
-      color: #526173;
-      font-size: 0.85rem;
-    }
-
-    .plan-btn {
-      display: inline-block;
-      margin-top: 12px;
-      padding: 9px 14px;
-      border-radius: 10px;
-      color: #fff;
-      text-decoration: none;
-      font-size: 0.86rem;
-      font-weight: 700;
-      background: #12496f;
-    }
-
-    .plan-btn.featured {
-      background: #ff7a1a;
-    }
-
-    .pricing-note {
-      text-align: center;
-      color: #526173;
-      font-size: 0.9rem;
-      margin: 12px 0 0;
-    }
-
-    @media (max-width: 700px) {
-      body { padding: 10px; }
-      .shell { padding: 10px; border-radius: 22px; }
-      .deck { grid-template-columns: 1fr; }
-      .left { padding: 20px; }
-      .right { padding: 18px; }
-      .menu-grid { grid-template-columns: 1fr; }
-      .menu-item { grid-template-columns: 44px 1fr; padding: 13px; }
-      .menu-icon { width: 44px; height: 44px; font-size: .95rem; }
-      .pricing-section { margin: 20px 0; padding: 14px; }
-      .pricing-title { font-size: 1.2rem; }
-      .pricing-grid { grid-template-columns: 1fr; gap: 10px; }
-    }
-  </style>
-</head>
-<body>
-  <span class="aura one" aria-hidden="true"></span>
-  <span class="aura two" aria-hidden="true"></span>
-  <main class="shell">
-    <section class="deck">
-      <aside class="left">
-        <span class="badge">Control AZ</span>
-        <div class="logo-mark">
-          <strong>AZ</strong>
-          <span>Bienvenido. Desde este menu puede abrir la informacion del sistema de forma sencilla.</span>
-        </div>
-      </aside>
-      <section class="right">
-        <h1>Menu Principal</h1>
-        <p class="lead">Seleccione una opcion para ver la informacion del sistema.</p>
-        
-        <section class="pricing-section">
-          <h2 class="pricing-title">PLANES Y PRECIOS</h2>
-          <div class="pricing-grid">
-            <div class="pricing-card">
-              <strong class="pricing-name">VERSIÓN ESCRITORIO</strong>
-              <p class="pricing-sub">Windows 7 en adelante</p>
-              <div class="pricing-value">$999</div>
-              <p class="pricing-term">Pago único de por vida</p>
-              <a href="plan-escritorio.html" class="plan-btn">Seleccionar plan</a>
-            </div>
-            <div class="pricing-card">
-              <strong class="pricing-name">VERSIÓN ANDROID</strong>
-              <p class="pricing-sub">Android 8.0 en adelante</p>
-              <div class="pricing-value">$999</div>
-              <p class="pricing-term">Pago único de por vida</p>
-              <a href="plan-android.html" class="plan-btn">Seleccionar plan</a>
-            </div>
-            <div class="pricing-card featured">
-              <strong class="pricing-badge">MEJOR OFERTA</strong>
-              <strong class="pricing-name">AMBOS PAQUETES</strong>
-              <p class="pricing-sub">Escritorio + Android</p>
-              <div class="pricing-value">$1,499</div>
-              <p class="pricing-term">Pago único de por vida</p>
-              <a href="plan-completo.html" class="plan-btn featured">Seleccionar plan</a>
-            </div>
-          </div>
-          <p class="pricing-note">Contacta para más información sobre implementación y soporte técnico.</p>
-        </section>
-        
-        <div class="menu-grid">
-      <a class="menu-item" href="Control%20de%20Inventario%20AZ_portable.html">
-        <span class="menu-icon">01</span>
-        <span>
-          <strong class="menu-title">Conocer el Sistema</strong>
-          <small class="menu-desc">Resumen general con funciones y beneficios principales.</small>
-        </span>
-      </a>
-      <a class="menu-item" href="MANUAL_portable.html">
-        <span class="menu-icon">02</span>
-        <span>
-          <strong class="menu-title">Manual de Usuario</strong>
-          <small class="menu-desc">Guia paso a paso para usar ventas, caja, inventario y reportes.</small>
-        </span>
-      </a>
-      <a class="menu-item" href="REQUISITOS_portable.html">
-        <span class="menu-icon">03</span>
-        <span>
-          <strong class="menu-title">Requisitos del Sistema</strong>
-          <small class="menu-desc">Requisitos minimos de computadora y configuracion necesaria.</small>
-        </span>
-      </a>
-      <a class="menu-item" href="GUIA_GENERIC_TEXT_portable.html">
-        <span class="menu-icon">04</span>
-        <span>
-          <strong class="menu-title">Guia de Impresora</strong>
-          <small class="menu-desc">Pasos para configurar la impresora de tickets correctamente.</small>
-        </span>
-      </a>
-        </div>
+      @media (max-width: 920px) {
+        .projects { grid-template-columns: 1fr; }
+        .hero, .card { padding: 24px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <p class="eyebrow">Sistemas a la venta</p>
+        <h1>Software profesional para negocios reales.</h1>
+        <p>Seleccion de sistemas orientados a control, operacion y administracion comercial. Cada proyecto cuenta con su propia pagina para conocer funciones, alcance visual y esquema de venta.</p>
       </section>
-    </section>
-  </main>
-</body>
+
+      <section class="projects">
+        <article class="card">
+          <div class="card-top">
+            <div class="mark az">AZ</div>
+            <span class="badge">Inventario y ventas</span>
+          </div>
+          <h2>Control AZ</h2>
+          <p class="summary">Sistema para control de inventario, ventas, caja y operacion comercial. La presentacion concentra modulos, capturas, documentos y metodos de pago en una sola pagina de proyecto.</p>
+          <div class="meta">
+            <span>Windows</span>
+            <span>Android</span>
+            <span>POS</span>
+            <span>Pagos</span>
+          </div>
+          <div class="actions">
+            <a class="primary" href="control-az.html">Ver proyecto</a>
+            <a class="ghost" href="MANUAL.html">Ver documentacion</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <div class="mark beauty">BS</div>
+            <span class="badge">Salon y estetica</span>
+          </div>
+          <h2>BeautySys</h2>
+          <p class="summary">Software de escritorio para salones, barberias y centros de estetica. Integra CRM, agenda, inventario, caja, branding del negocio y documentos PDF con enfoque premium.</p>
+          <div class="meta">
+            <span>Electron</span>
+            <span>Offline</span>
+            <span>CRM</span>
+            <span>PDF</span>
+          </div>
+          <div class="actions">
+            <a class="primary" href="beautysys.html">Ver proyecto</a>
+            <a class="ghost" href="capturas/beautysys/Captura%20de%20pantalla%202026-04-04%20203927.png">Vista previa</a>
+          </div>
+        </article>
+      </section>
+
+      <p class="footer">Andres Zarate · Sistemas disponibles</p>
+    </main>
+  </body>
 </html>
