@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Requisitos | Control AZ</title>
+    <meta name="description" content="Requisitos tecnicos recomendados para instalar Control AZ en un negocio." />
+    <style>
+      :root {
+        --bg: #0d1118;
+        --panel: rgba(17, 23, 34, 0.84);
+        --panel-soft: rgba(20, 27, 41, 0.84);
+        --line: rgba(255, 255, 255, 0.08);
+        --text: #f5f7fa;
+        --muted: #97a0b1;
+        --accent: #70b2ff;
+        --orange: #ff9f45;
+        --shadow: 0 28px 70px rgba(0, 0, 0, 0.42);
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; font-family: Inter, system-ui, sans-serif; color: var(--text); background: linear-gradient(160deg, #0b1018 0%, #0f1520 48%, #111827 100%); }
+      a { color: inherit; text-decoration: none; }
+      .shell { width: min(980px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0 64px; }
+      .back { display: inline-flex; margin-bottom: 18px; color: var(--muted); }
+      .hero, .panel { border: 1px solid var(--line); border-radius: 28px; box-shadow: var(--shadow); background: linear-gradient(180deg, rgba(18, 24, 38, 0.9), rgba(10, 14, 24, 0.94)); }
+      .hero { padding: 30px; }
+      .panel { padding: 22px; margin-top: 18px; }
+      .eyebrow { margin: 0; font-size: 12px; letter-spacing: 0.34em; text-transform: uppercase; color: var(--accent); }
+      h1, h2 { margin: 12px 0; font-family: Poppins, Inter, sans-serif; }
+      p, li { color: var(--muted); line-height: 1.7; }
+      .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+      .card { padding: 16px 18px; border-radius: 18px; background: var(--panel-soft); border: 1px solid var(--line); }
+      .card strong { display: block; margin-bottom: 8px; color: var(--text); }
+      .alert { margin-top: 12px; padding: 14px 16px; border-radius: 16px; border: 1px solid rgba(255, 159, 69, 0.3); background: rgba(255, 159, 69, 0.08); color: #ffd4aa; }
+      @media (max-width: 720px) { .cards { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <a class="back" href="control-az.html">← Volver a Control AZ</a>
+      <section class="hero">
+        <p class="eyebrow">Requisitos</p>
+        <h1>Lo necesario para instalar y trabajar sin friccion.</h1>
+        <p>Version resumida para ventas e implementacion, sin repetir bloques largos de documentacion tecnica.</p>
+      </section>
+      <section class="panel">
+        <h2>Equipo recomendado</h2>
+        <div class="cards">
+          <div class="card"><strong>Minimo</strong><p>Procesador tipo Intel Core i3 o equivalente, 4 GB de RAM, 500 MB libres y pantalla de 1024 x 768.</p></div>
+          <div class="card"><strong>Recomendado</strong><p>Intel i5 o Ryzen 5, 8 GB de RAM, SSD y pantalla de 1280 x 720 o superior para mejor fluidez.</p></div>
+          <div class="card"><strong>Sistema operativo</strong><p>Windows 10 u 11 de 64 bits. Versiones antiguas no se recomiendan para operacion comercial.</p></div>
+          <div class="card"><strong>Impresora</strong><p>Opcional para tickets. Se recomienda impresora termica de 58 mm u 80 mm con driver Generic/Text Only u oficial.</p></div>
+          <div class="card"><strong>Internet</strong><p>No es obligatorio para ventas, caja e inventario. Solo ayuda para soporte remoto, respaldo o actualizaciones.</p></div>
+          <div class="card"><strong>Espacio y crecimiento</strong><p>La instalacion base ronda unos cientos de MB; el crecimiento depende del volumen de productos y movimientos.</p></div>
+        </div>
+        <div class="alert">Para negocio real conviene usar una PC dedicada al sistema, hacer respaldos frecuentes y controlar el acceso del usuario administrador.</div>
+      </section>
+    </main>
+  </body>
+</html>
