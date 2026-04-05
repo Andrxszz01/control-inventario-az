@@ -48,6 +48,13 @@
       .item, .payment { padding: 16px 18px; border-radius: 18px; background: var(--panel-soft); border: 1px solid var(--line); }
       .item strong, .payment strong { display: block; margin-bottom: 6px; }
       .item p, .payment p { margin: 0; color: var(--muted); line-height: 1.65; }
+      .payment-detail { padding: 18px; border-radius: 18px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--line); }
+      .payment-detail strong { display: block; margin-bottom: 6px; }
+      .payment-detail p { margin: 0; color: var(--muted); line-height: 1.65; }
+      .payment-data { margin-top: 10px; display: grid; gap: 8px; }
+      .payment-data span { color: #dfe6f3; font-size: 14px; }
+      .pay-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+      .whatsapp-pay { background: linear-gradient(135deg, #25d366, #7cf2a6); color: #0b1b10; }
       .gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
       .shot { overflow: hidden; border-radius: 18px; border: 1px solid var(--line); background: rgba(255,255,255,0.03); display: block; }
       .shot img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block; transition: transform .3s ease; }
@@ -110,6 +117,29 @@
             <div class="payment"><strong>Version Android</strong><div class="price">$999</div><p>Licencia de pago unico para dispositivos Android compatibles.</p></div>
             <div class="payment"><strong>Paquete completo</strong><div class="price">$1,499</div><p>Escritorio + Android en una sola compra.</p></div>
             <div class="payment"><strong>Metodos de pago</strong><p>Transferencia bancaria, deposito o acuerdo directo con el cliente para implementacion y entrega.</p></div>
+            <div class="payment-detail">
+              <strong>Nu Mexico</strong>
+              <p>Transferencia o deposito para activar cualquiera de los planes.</p>
+              <div class="payment-data">
+                <span><strong>Nombre:</strong> Andres Manuel Lopez Zarate</span>
+                <span><strong>CLABE:</strong> 6381 8001 0174 6301 41</span>
+                <span><strong>Depositos en efectivo:</strong> 5195 3785 7882 6125</span>
+              </div>
+            </div>
+            <div class="payment-detail">
+              <strong>BBVA</strong>
+              <p>Alternativa rapida para tarjeta o transferencia.</p>
+              <div class="payment-data">
+                <span><strong>Nombre:</strong> Andres Manuel Lopez Zarate</span>
+                <span><strong>Tarjeta de debito:</strong> 4152 3141 2512 6378</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pay-actions">
+            <a class="primary whatsapp-pay" href="https://wa.me/526471200790?text=Hola%2C%20ya%20realice%20mi%20pago%20del%20Plan%20Escritorio%20%28999%20MXN%29%20de%20Control%20AZ.%20Comparto%20mi%20comprobante%20para%20activacion." target="_blank" rel="noreferrer">Enviar comprobante Escritorio</a>
+            <a class="primary whatsapp-pay" href="https://wa.me/526471200790?text=Hola%2C%20ya%20realice%20mi%20pago%20del%20Plan%20Android%20%28999%20MXN%29%20de%20Control%20AZ.%20Comparto%20mi%20comprobante%20para%20activacion." target="_blank" rel="noreferrer">Enviar comprobante Android</a>
+            <a class="primary whatsapp-pay" href="https://wa.me/526471200790?text=Hola%2C%20ya%20realice%20mi%20pago%20del%20Plan%20Completo%20%28Escritorio%20%2B%20Android%29%20%281499%20MXN%29%20de%20Control%20AZ.%20Comparto%20mi%20comprobante%20para%20activacion." target="_blank" rel="noreferrer">Enviar comprobante Completo</a>
           </div>
 
           <h2 style="margin-top:24px;">Galeria</h2>

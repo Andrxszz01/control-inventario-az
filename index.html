@@ -75,6 +75,38 @@
         line-height: 1.7;
       }
 
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 22px;
+      }
+
+      .contact-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 20px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text);
+        font-weight: 700;
+      }
+
+      .contact-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #25d366, #7cf2a6);
+        color: #08140d;
+        font-size: 13px;
+        font-weight: 900;
+      }
+
       .projects {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -205,6 +237,12 @@
         <p class="eyebrow">Catalogo Profesional</p>
         <h1>Soluciones de software listas para presentacion comercial.</h1>
         <p>Catalogo publico de proyectos desarrollados para operacion, control y administracion. Cada sistema cuenta con una vista dedicada para conocer su propuesta, alcance visual y accesos principales.</p>
+        <div class="hero-actions">
+          <a class="contact-chip" href="https://wa.me/526471200790?text=Hola%2C%20quiero%20informacion%20sobre%20tus%20proyectos%20y%20metodos%20de%20pago." target="_blank" rel="noreferrer">
+            <span class="contact-icon">WA</span>
+            <span>Contacto</span>
+          </a>
+        </div>
       </section>
 
       <section class="projects">
@@ -223,7 +261,7 @@
           </div>
           <div class="actions">
             <a class="primary" href="control-az.html">Ver proyecto</a>
-            <a class="ghost" href="https://andrxszz01.github.io/control-inventario-az/" target="_blank" rel="noreferrer">Abrir sitio actual</a>
+            <a class="ghost" href="https://wa.me/526471200790?text=Hola%2C%20quiero%20informacion%20sobre%20Control%20de%20Inventario%20AZ%20y%20sus%20metodos%20de%20pago." target="_blank" rel="noreferrer">Contacto</a>
           </div>
         </article>
 
@@ -241,7 +279,7 @@
           </div>
           <div class="actions">
             <a class="primary" href="beautysys.html">Ver proyecto</a>
-            <a class="ghost" href="capturas/beautysys/Captura%20de%20pantalla%202026-04-04%20203927.png">Vista previa</a>
+            <a class="ghost" href="https://wa.me/526471200790?text=Hola%2C%20quiero%20informacion%20sobre%20BeautySys%20y%20sus%20metodos%20de%20pago." target="_blank" rel="noreferrer">Contacto</a>
           </div>
         </article>
       </section>

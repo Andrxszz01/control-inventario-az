@@ -51,6 +51,11 @@
       .payment { padding: 16px 18px; border-radius: 18px; background: var(--panel-soft); border: 1px solid var(--line); }
       .payment strong { display: block; margin-bottom: 6px; }
       .payment p { margin: 0; color: var(--muted); line-height: 1.65; }
+      .payment-detail { padding: 16px 18px; border-radius: 18px; background: var(--panel-soft); border: 1px solid var(--line); }
+      .payment-detail strong { display: block; margin-bottom: 6px; }
+      .payment-detail p { margin: 0; color: var(--muted); line-height: 1.65; }
+      .payment-data { display: grid; gap: 8px; margin-top: 10px; }
+      .payment-data span { color: #e0d7c6; font-size: 14px; }
       .price { color: var(--gold); font-size: 30px; font-family: Poppins, Inter, sans-serif; }
       .gallery-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
       .shot { display: block; overflow: hidden; border-radius: 22px; border: 1px solid var(--line); background: rgba(255, 255, 255, 0.03); }
@@ -60,6 +65,7 @@
       .primary, .ghost { padding: 14px 20px; border-radius: 16px; font-weight: 700; }
       .primary { background: linear-gradient(135deg, var(--gold), var(--gold-soft)); color: #141821; }
       .ghost { border: 1px solid var(--line); background: rgba(255, 255, 255, 0.03); }
+      .whatsapp-pay { background: linear-gradient(135deg, #25d366, #7cf2a6); color: #0b1b10; }
       .lightbox { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(0, 0, 0, 0.78); backdrop-filter: blur(10px); }
       .lightbox.open { display: flex; }
       .lightbox img { max-width: min(1200px, 100%); max-height: 88vh; border-radius: 24px; box-shadow: var(--shadow); }
@@ -98,6 +104,28 @@
             <div class="payment"><strong>Version escritorio</strong><div class="price">$999</div><p>Licencia de pago unico para instalacion en Windows.</p></div>
             <div class="payment"><strong>Implementacion con soporte</strong><div class="price">Cotizacion</div><p>Configuracion inicial, personalizacion y acompanamiento segun necesidad del negocio.</p></div>
             <div class="payment"><strong>Metodos de pago</strong><p>Transferencia bancaria, deposito o acuerdo directo para cierre y entrega del sistema.</p></div>
+            <div class="payment-detail">
+              <strong>Nu Mexico</strong>
+              <p>Transferencia o deposito para licenciamiento y activacion.</p>
+              <div class="payment-data">
+                <span><strong>Nombre:</strong> Andres Manuel Lopez Zarate</span>
+                <span><strong>CLABE:</strong> 6381 8001 0174 6301 41</span>
+                <span><strong>Depositos en efectivo:</strong> 5195 3785 7882 6125</span>
+              </div>
+            </div>
+            <div class="payment-detail">
+              <strong>BBVA</strong>
+              <p>Alternativa para tarjeta o acuerdo directo de entrega.</p>
+              <div class="payment-data">
+                <span><strong>Nombre:</strong> Andres Manuel Lopez Zarate</span>
+                <span><strong>Tarjeta de debito:</strong> 4152 3141 2512 6378</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="cta">
+            <a class="primary whatsapp-pay" href="https://wa.me/526471200790?text=Hola%2C%20ya%20realice%20mi%20pago%20de%20BeautySys%20%28999%20MXN%29.%20Comparto%20mi%20comprobante%20para%20activacion." target="_blank" rel="noreferrer">Enviar comprobante BeautySys</a>
+            <a class="ghost" href="https://wa.me/526471200790?text=Hola%2C%20quiero%20cotizacion%20de%20implementacion%20y%20soporte%20para%20BeautySys." target="_blank" rel="noreferrer">Cotizar implementacion</a>
           </div>
         </article>
 
