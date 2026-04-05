@@ -4,32 +4,38 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Catalogo de Proyectos | Andres Zarate</title>
-    <meta name="description" content="Catalogo publico de proyectos de software para operacion comercial, inventario y gestion de negocios." />
     <style>
       :root {
-        --bg: #09111f;
-        --panel: rgba(16, 22, 35, 0.86);
+        --bg: #0b1020;
+        --bg-soft: #121a2e;
+        --panel: rgba(17, 24, 39, 0.78);
+        --panel-strong: rgba(10, 15, 26, 0.88);
         --line: rgba(255, 255, 255, 0.08);
         --text: #f5f7fb;
-        --muted: #98a3b7;
+        --muted: #96a0b8;
         --gold: #d6b46d;
-        --blue: #70b2ff;
-        --shadow: 0 24px 70px rgba(0, 0, 0, 0.36);
+        --blue: #66a7ff;
+        --shadow: 0 24px 60px rgba(0, 0, 0, 0.38);
       }
 
-      * { box-sizing: border-box; }
+      * {
+        box-sizing: border-box;
+      }
 
       body {
         margin: 0;
         font-family: Inter, system-ui, sans-serif;
         color: var(--text);
         background:
-          radial-gradient(circle at top left, rgba(214, 180, 109, 0.14), transparent 24%),
-          radial-gradient(circle at bottom right, rgba(112, 178, 255, 0.14), transparent 24%),
-          linear-gradient(160deg, #08101d 0%, #0b1423 46%, #101827 100%);
+          radial-gradient(circle at top left, rgba(214, 180, 109, 0.12), transparent 24%),
+          radial-gradient(circle at bottom right, rgba(102, 167, 255, 0.12), transparent 24%),
+          linear-gradient(160deg, var(--bg) 0%, #0d1324 45%, #101728 100%);
       }
 
-      a { color: inherit; text-decoration: none; }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
 
       .shell {
         width: min(1180px, calc(100% - 32px));
@@ -39,9 +45,9 @@
 
       .hero {
         border: 1px solid var(--line);
+        background: linear-gradient(145deg, rgba(12, 17, 28, 0.82), rgba(17, 24, 39, 0.94));
         border-radius: 34px;
         padding: 38px;
-        background: linear-gradient(145deg, rgba(13, 19, 31, 0.88), rgba(18, 25, 39, 0.94));
         box-shadow: var(--shadow);
       }
 
@@ -55,18 +61,18 @@
 
       h1 {
         margin: 18px 0 14px;
-        max-width: 760px;
+        max-width: 800px;
         font-family: Poppins, Inter, sans-serif;
-        font-size: clamp(38px, 6vw, 70px);
-        line-height: 0.96;
+        font-size: clamp(38px, 6vw, 68px);
+        line-height: 0.98;
       }
 
       .hero p:last-child {
+        max-width: 720px;
         margin: 0;
-        max-width: 760px;
         color: var(--muted);
         font-size: 18px;
-        line-height: 1.75;
+        line-height: 1.7;
       }
 
       .projects {
@@ -78,9 +84,9 @@
 
       .card {
         border: 1px solid var(--line);
+        background: linear-gradient(180deg, rgba(18, 24, 38, 0.9), rgba(10, 14, 24, 0.92));
         border-radius: 30px;
         padding: 28px;
-        background: linear-gradient(180deg, rgba(18, 24, 38, 0.9), rgba(10, 14, 24, 0.92));
         box-shadow: var(--shadow);
       }
 
@@ -103,8 +109,13 @@
         color: #10141d;
       }
 
-      .mark.az { background: linear-gradient(135deg, #71b6ff, #d9ecff); }
-      .mark.beauty { background: linear-gradient(135deg, #d6b46d, #f3dfb1); }
+      .mark.az {
+        background: linear-gradient(135deg, #71b6ff, #d3ecff);
+      }
+
+      .mark.beauty {
+        background: linear-gradient(135deg, #d6b46d, #f3dfb1);
+      }
 
       .badge {
         display: inline-flex;
@@ -177,36 +188,42 @@
       }
 
       @media (max-width: 920px) {
-        .projects { grid-template-columns: 1fr; }
-        .hero, .card { padding: 24px; }
+        .projects {
+          grid-template-columns: 1fr;
+        }
+
+        .hero,
+        .card {
+          padding: 24px;
+        }
       }
     </style>
   </head>
   <body>
     <main class="shell">
       <section class="hero">
-        <p class="eyebrow">Sistemas a la venta</p>
-        <h1>Software profesional para negocios reales.</h1>
-        <p>Seleccion de sistemas orientados a control, operacion y administracion comercial. Cada proyecto cuenta con su propia pagina para conocer funciones, alcance visual y esquema de venta.</p>
+        <p class="eyebrow">Catalogo Profesional</p>
+        <h1>Soluciones de software listas para presentacion comercial.</h1>
+        <p>Catalogo publico de proyectos desarrollados para operacion, control y administracion. Cada sistema cuenta con una vista dedicada para conocer su propuesta, alcance visual y accesos principales.</p>
       </section>
 
       <section class="projects">
         <article class="card">
           <div class="card-top">
-            <div class="mark az">AZ</div>
+            <div class="mark az">IV</div>
             <span class="badge">Inventario y ventas</span>
           </div>
-          <h2>Control AZ</h2>
-          <p class="summary">Sistema para control de inventario, ventas, caja y operacion comercial. La presentacion concentra modulos, capturas, documentos y metodos de pago en una sola pagina de proyecto.</p>
+          <h2>Control de Inventario y Ventas</h2>
+          <p class="summary">Sistema completo para el control de inventario, ventas y caja, pensado para negocios. Todo esta organizado en una sola pagina: modulos, capturas, documentacion y metodos de pago, para que entiendas y uses el sistema sin complicaciones ademas de una galeria visual del sistema.</p>
           <div class="meta">
             <span>Windows</span>
             <span>Android</span>
-            <span>POS</span>
-            <span>Pagos</span>
+            <span>Ventas</span>
+            <span>Planes y pagos</span>
           </div>
           <div class="actions">
             <a class="primary" href="control-az.html">Ver proyecto</a>
-            <a class="ghost" href="MANUAL.html">Ver documentacion</a>
+            <a class="ghost" href="https://andrxszz01.github.io/control-inventario-az/" target="_blank" rel="noreferrer">Abrir sitio actual</a>
           </div>
         </article>
 
@@ -216,12 +233,11 @@
             <span class="badge">Salon y estetica</span>
           </div>
           <h2>BeautySys</h2>
-          <p class="summary">Software de escritorio para salones, barberias y centros de estetica. Integra CRM, agenda, inventario, caja, branding del negocio y documentos PDF con enfoque premium.</p>
+          <p class="summary">Software de escritorio para salones, barberias y centros de estetica. Incluye agenda, clientes, caja, inventario, reportes, branding del negocio y una galeria visual del sistema.</p>
           <div class="meta">
-            <span>Electron</span>
-            <span>Offline</span>
-            <span>CRM</span>
-            <span>PDF</span>
+            <span>Windows</span>
+            <span>Sin internet</span>
+            <span>Administracion</span>
           </div>
           <div class="actions">
             <a class="primary" href="beautysys.html">Ver proyecto</a>
@@ -230,7 +246,7 @@
         </article>
       </section>
 
-      <p class="footer">Andres Zarate · Sistemas disponibles</p>
+      <p class="footer">ig: @andrxsz · Andres Zarate · Catalogo de proyectos</p>
     </main>
   </body>
 </html>
