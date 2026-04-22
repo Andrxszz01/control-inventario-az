@@ -1,187 +1,235 @@
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Control AZ</title>
-    <meta name="description" content="Presentacion publica de Control AZ con vista general, material de apoyo, galeria y metodos de pago." />
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Inventario AZ | Caso de Estudio</title>
+
+    <!-- SEO & Metadata -->
+    <meta name="description" content="Análisis técnico del sistema POS Control AZ desarrollado por Andrés Zárate.">
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#030712',
+                        card: '#111827',
+                        accent: '#3b82f6',
+                        gold: '#d6b46d',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Animations (AOS) -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
     <style>
-      :root {
-        --bg: #0d1118;
-        --panel: rgba(17, 23, 34, 0.84);
-        --panel-soft: rgba(20, 27, 41, 0.84);
-        --line: rgba(255, 255, 255, 0.08);
-        --text: #f5f7fa;
-        --muted: #97a0b1;
-        --accent: #70b2ff;
-        --orange: #ff9f45;
-        --shadow: 0 28px 70px rgba(0, 0, 0, 0.42);
-      }
-
-      * { box-sizing: border-box; }
-      body {
-        margin: 0;
-        font-family: Inter, system-ui, sans-serif;
-        color: var(--text);
-        background:
-          radial-gradient(circle at top left, rgba(112, 178, 255, 0.14), transparent 22%),
-          radial-gradient(circle at bottom right, rgba(255, 159, 69, 0.12), transparent 24%),
-          linear-gradient(160deg, #0b1018 0%, #0f1520 48%, #111827 100%);
-      }
-      a { color: inherit; text-decoration: none; }
-      .shell { width: min(1240px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0 60px; }
-      .back { display: inline-flex; margin-bottom: 18px; color: var(--muted); }
-      .hero, .panel { border: 1px solid var(--line); border-radius: 30px; box-shadow: var(--shadow); }
-      .hero { padding: 34px; background: linear-gradient(145deg, rgba(16, 22, 34, 0.92), rgba(13, 18, 29, 0.94)); }
-      .eyebrow { margin: 0; font-size: 12px; letter-spacing: 0.34em; text-transform: uppercase; color: var(--accent); }
-      h1 { margin: 16px 0 12px; font-family: Poppins, Inter, sans-serif; font-size: clamp(34px, 5vw, 58px); line-height: 1; }
-      .hero p:last-child { margin: 0; max-width: 760px; color: var(--muted); line-height: 1.8; font-size: 18px; }
-      .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 26px; }
-      .stat { padding: 18px; border-radius: 22px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--line); }
-      .stat span { color: var(--muted); font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; }
-      .stat b { display: block; margin-top: 10px; font-size: 30px; font-family: Poppins, Inter, sans-serif; }
-      .stat p { margin: 8px 0 0; color: var(--muted); line-height: 1.55; }
-      .grid { display: grid; grid-template-columns: 1.02fr 0.98fr; gap: 22px; margin-top: 24px; }
-      .panel { padding: 26px; background: linear-gradient(180deg, rgba(18, 24, 38, 0.9), rgba(10, 14, 24, 0.94)); }
-      h2 { margin: 0 0 16px; font-family: Poppins, Inter, sans-serif; font-size: 28px; }
-      .features, .docs, .payments { display: grid; gap: 12px; }
-      .item, .payment { padding: 16px 18px; border-radius: 18px; background: var(--panel-soft); border: 1px solid var(--line); }
-      .item strong, .payment strong { display: block; margin-bottom: 6px; }
-      .item p, .payment p { margin: 0; color: var(--muted); line-height: 1.65; }
-      .payment-detail { padding: 18px; border-radius: 18px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--line); }
-      .payment-detail strong { display: block; margin-bottom: 6px; }
-      .payment-detail p { margin: 0; color: var(--muted); line-height: 1.65; }
-      .payment-data { margin-top: 10px; display: grid; gap: 8px; }
-      .payment-data span { color: #dfe6f3; font-size: 14px; }
-      .pay-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
-      .whatsapp-pay { background: linear-gradient(135deg, #25d366, #7cf2a6); color: #0b1b10; }
-      .gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-      .shot { overflow: hidden; border-radius: 18px; border: 1px solid var(--line); background: rgba(255,255,255,0.03); display: block; }
-      .shot img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block; transition: transform .3s ease; }
-      .shot:hover img { transform: scale(1.03); }
-      .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
-      .primary, .ghost { padding: 14px 18px; border-radius: 16px; font-weight: 700; }
-      .primary { background: linear-gradient(135deg, var(--accent), #beddff); color: #10141d; }
-      .ghost { border: 1px solid var(--line); background: rgba(255,255,255,0.03); }
-      .price { color: var(--orange); font-size: 30px; font-family: Poppins, Inter, sans-serif; }
-      .lightbox { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(6, 15, 28, 0.78); backdrop-filter: blur(8px); }
-      .lightbox.open { display: flex; }
-      .lightbox img { max-width: min(1200px, 100%); max-height: 88vh; border-radius: 22px; box-shadow: var(--shadow); }
-      .close { position: absolute; top: 20px; right: 20px; width: 48px; height: 48px; border: 0; border-radius: 999px; background: rgba(255,255,255,0.14); color: white; font-size: 24px; cursor: pointer; }
-      @media (max-width: 1024px) { .grid { grid-template-columns: 1fr; } .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-      @media (max-width: 720px) { .gallery, .stats { grid-template-columns: 1fr; } .hero, .panel { padding: 22px; } }
+        .glass {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .bg-gradient-mesh {
+            background-color: #030712;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(214, 180, 109, 0.1) 0px, transparent 50%);
+        }
+        .shot img {
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .shot:hover img {
+            transform: scale(1.05);
+        }
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+        .lightbox.open { display: flex; }
     </style>
-  </head>
-  <body>
-    <main class="shell">
-      <a class="back" href="index.html">← Volver al catalogo</a>
-      <section class="hero">
-        <p class="eyebrow">Proyecto</p>
-        <h1>Control AZ</h1>
-        <p>Sistema de control de inventario y ventas pensado para negocios que necesitan operacion clara, control de caja, reportes y una presentacion profesional para implementacion comercial.</p>
-        <div class="stats">
-          <article class="stat"><span>Plataforma</span><b>Windows</b><p>Aplicacion de escritorio orientada a punto de venta y administracion.</p></article>
-          <article class="stat"><span>Complemento</span><b>Android</b><p>Opcion movil para ampliar cobertura operativa.</p></article>
-          <article class="stat"><span>Flujo</span><b>POS</b><p>Ventas, caja, inventario y reportes en una sola operacion.</p></article>
-          <article class="stat"><span>Entrega</span><b>Comercial</b><p>Documentacion, material de apoyo y acceso a planes.</p></article>
+</head>
+<body class="bg-dark text-slate-200 font-sans selection:bg-accent/30 bg-gradient-mesh">
+
+    <!-- Header / Nav -->
+    <nav class="fixed top-0 w-full z-50 glass border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="font-display font-bold text-xl tracking-tighter text-white">AZ<span class="text-accent">.</span></a>
+            <a href="index.html" class="flex items-center text-sm font-medium hover:text-accent transition-colors">
+                <i data-lucide="arrow-left" class="mr-2 w-4 h-4"></i> Volver al Portafolio
+            </a>
         </div>
-      </section>
+    </nav>
 
-      <section class="grid">
-        <article class="panel">
-          <h2>Vista general</h2>
-          <div class="features">
-            <div class="item"><strong>Inventario y ventas</strong><p>Registro de productos, control de salidas, ventas rapidas y arqueo de caja.</p></div>
-            <div class="item"><strong>Reportes y seguimiento</strong><p>Consultas operativas para revisar movimientos, balances y control del negocio.</p></div>
-            <div class="item"><strong>Implementacion clara</strong><p>El proyecto cuenta con pagina comercial, manual, requisitos tecnicos y guia de impresora.</p></div>
-          </div>
-
-          <h2 style="margin-top:24px;">Material del proyecto</h2>
-          <div class="docs">
-            <a class="item" href="Control%20de%20Inventario%20AZ_portable.html"><strong>Pagina comercial</strong><p>Presentacion visual del sistema enfocada a demostracion y venta.</p></a>
-            <a class="item" href="MANUAL_portable.html"><strong>Manual de usuario</strong><p>Operacion paso a paso de ventas, caja, inventario y reportes.</p></a>
-            <a class="item" href="REQUISITOS_portable.html"><strong>Requisitos del sistema</strong><p>Condiciones tecnicas necesarias para instalacion y funcionamiento.</p></a>
-            <a class="item" href="GUIA_GENERIC_TEXT_portable.html"><strong>Guia de impresora</strong><p>Configuracion de impresion para tickets con Generic/Text Only.</p></a>
-          </div>
-
-          <div class="actions">
-            <a class="primary" href="Control%20de%20Inventario%20AZ_portable.html">Abrir presentacion</a>
-            <a class="ghost" href="MANUAL_portable.html">Ver manual</a>
-          </div>
-        </article>
-
-        <article class="panel">
-          <h2>Planes y metodos de pago</h2>
-          <div class="payments">
-            <div class="payment"><strong>Version escritorio</strong><div class="price">$999</div><p>Licencia de pago unico para Windows.</p></div>
-            <div class="payment"><strong>Version Android</strong><div class="price">$999</div><p>Licencia de pago unico para dispositivos Android compatibles.</p></div>
-            <div class="payment"><strong>Paquete completo</strong><div class="price">$1,499</div><p>Escritorio + Android en una sola compra.</p></div>
-            <div class="payment"><strong>Metodos de pago</strong><p>Transferencia bancaria, deposito o acuerdo directo con el cliente para implementacion y entrega.</p></div>
-            <div class="payment-detail">
-              <strong>Nu Mexico</strong>
-              <p>Transferencia o deposito para activar cualquiera de los planes.</p>
-              <div class="payment-data">
-                <span><strong>Nombre:</strong> Andres Manuel Lopez Zarate</span>
-                <span><strong>CLABE:</strong> 6381 8001 0174 6301 41</span>
-                <span><strong>Depositos en efectivo:</strong> 5195 3785 7882 6125</span>
-              </div>
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-16 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="max-w-3xl" data-aos="fade-up">
+                <span class="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-widest text-accent uppercase bg-accent/10 border border-accent/20 rounded-full">
+                    Sistemas Administrativos POS
+                </span>
+                <h1 class="font-display text-5xl md:text-6xl font-extrabold mb-6 leading-tight text-white">
+                    Control de Inventario <span class="text-accent">AZ</span>
+                </h1>
+                <p class="text-lg md:text-xl text-slate-400 mb-8 leading-relaxed">
+                    Diseñé este sistema para ofrecer una solución <span class="text-white font-semibold">offline-first</span> robusta. Mi enfoque fue centralizar el control de stock, las ventas y los reportes en una interfaz intuitiva que no dependa de la conexión a internet, optimizando procesos críticos en un <span class="text-accent font-bold">40%</span>.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <div class="glass px-4 py-2 rounded-lg text-[10px] font-bold border-white/5 uppercase tracking-widest">C# / .NET</div>
+                    <div class="glass px-4 py-2 rounded-lg text-[10px] font-bold border-white/5 uppercase tracking-widest">SQL Server</div>
+                    <div class="glass px-4 py-2 rounded-lg text-[10px] font-bold border-white/5 uppercase tracking-widest">WinForms</div>
+                </div>
             </div>
-            <div class="payment-detail">
-              <strong>BBVA</strong>
-              <p>Alternativa rapida para tarjeta o transferencia.</p>
-              <div class="payment-data">
-                <span><strong>Nombre:</strong> Andres Manuel Lopez Zarate</span>
-                <span><strong>Tarjeta de debito:</strong> 4152 3141 2512 6378</span>
-              </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-12 pb-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-3 gap-8">
+
+                <!-- Gallery & Technical Details -->
+                <div class="lg:col-span-2 space-y-8">
+
+                    <!-- Interface Gallery -->
+                    <div class="glass p-8 rounded-[2.5rem] border-white/5" data-aos="fade-up">
+                        <h2 class="font-display text-2xl font-bold text-white mb-8">Interfaz del Sistema</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Imágenes cargadas desde GitHub Pages -->
+                            <a class="shot group relative overflow-hidden rounded-2xl border border-white/10" href="https://andrxszz01.github.io/control-inventario-az/capturas/Captura%20de%20pantalla%202026-04-02%20093209.png">
+                                <img src="https://andrxszz01.github.io/control-inventario-az/capturas/Captura%20de%20pantalla%202026-04-02%20093209.png" class="w-full aspect-video object-cover" alt="Dashboard Control AZ">
+                                <div class="absolute inset-0 bg-dark/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <i data-lucide="zoom-in" class="text-accent w-8 h-8"></i>
+                                </div>
+                            </a>
+                            <a class="shot group relative overflow-hidden rounded-2xl border border-white/10" href="https://andrxszz01.github.io/control-inventario-az/capturas/Captura%20de%20pantalla%202026-04-02%20093241.png">
+                                <img src="https://andrxszz01.github.io/control-inventario-az/capturas/Captura%20de%20pantalla%202026-04-02%20093241.png" class="w-full aspect-video object-cover" alt="Ventas y Caja">
+                                <div class="absolute inset-0 bg-dark/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <i data-lucide="zoom-in" class="text-accent w-8 h-8"></i>
+                                </div>
+                            </a>
+                            <a class="shot group relative overflow-hidden rounded-2xl border border-white/10" href="https://andrxszz01.github.io/control-inventario-az/capturas/Captura%20de%20pantalla%202026-04-02%20093618.png">
+                                <img src="https://andrxszz01.github.io/control-inventario-az/capturas/Captura%20de%20pantalla%202026-04-02%20093618.png" class="w-full aspect-video object-cover" alt="Inventario de Productos">
+                                <div class="absolute inset-0 bg-dark/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <i data-lucide="zoom-in" class="text-accent w-8 h-8"></i>
+                                </div>
+                            </a>
+                            <a class="shot group relative overflow-hidden rounded-2xl border border-white/10" href="https://andrxszz01.github.io/control-inventario-az/capturas/Captura%20de%20pantalla%202026-04-02%20093821.png">
+                                <img src="https://andrxszz01.github.io/control-inventario-az/capturas/Captura%20de%20pantalla%202026-04-02%20093821.png" class="w-full aspect-video object-cover" alt="Reportes PDF">
+                                <div class="absolute inset-0 bg-dark/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <i data-lucide="zoom-in" class="text-accent w-8 h-8"></i>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Tech Details -->
+                    <div class="glass p-10 rounded-[2.5rem] border-white/5" data-aos="fade-up">
+                        <h2 class="font-display text-2xl font-bold text-white mb-6">Módulos Desarrollados</h2>
+                        <div class="grid md:grid-cols-2 gap-4 text-sm text-slate-400">
+                            <div class="flex items-center p-4 rounded-xl bg-white/5 border border-white/5">
+                                <i data-lucide="check" class="text-accent mr-3 w-4 h-4"></i> Dashboard de ventas en tiempo real.
+                            </div>
+                            <div class="flex items-center p-4 rounded-xl bg-white/5 border border-white/5">
+                                <i data-lucide="check" class="text-accent mr-3 w-4 h-4"></i> Alertas de stock mínimo automáticas.
+                            </div>
+                            <div class="flex items-center p-4 rounded-xl bg-white/5 border border-white/5">
+                                <i data-lucide="check" class="text-accent mr-3 w-4 h-4"></i> Generación de tickets e informes PDF.
+                            </div>
+                            <div class="flex items-center p-4 rounded-xl bg-white/5 border border-white/5">
+                                <i data-lucide="check" class="text-accent mr-3 w-4 h-4"></i> Sincronización híbrida Windows/Android.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar / Action -->
+                <div class="space-y-8">
+                    <div class="glass p-8 rounded-[2.5rem] border-accent/20 sticky top-24" data-aos="fade-left">
+                        <h2 class="font-display text-xl font-bold text-white mb-4">¿Te interesa una demo?</h2>
+                        <p class="text-sm text-slate-400 mb-8 leading-relaxed">Puedo mostrarte el funcionamiento interno del sistema, la gestión de la base de datos y cómo se adapta a diferentes modelos de negocio.</p>
+
+                        <a href="https://wa.me/526471200790" target="_blank" class="flex items-center justify-center bg-accent text-white w-full py-4 rounded-xl font-bold hover:bg-blue-600 transition-all group mb-4">
+                            Solicitar Demo <i data-lucide="message-circle" class="ml-2 w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                        </a>
+
+                        <a href="index.html#contacto" class="flex items-center justify-center glass text-white w-full py-4 rounded-xl font-bold hover:bg-white/10 transition-all">
+                            Otros Medios
+                        </a>
+
+                        <div class="mt-8 pt-8 border-t border-white/5">
+                            <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-4">Documentación Externa</p>
+                            <div class="space-y-2">
+                                <a href="https://andrxszz01.github.io/control-inventario-az/MANUAL_portable.html" target="_blank" class="flex items-center text-xs text-slate-400 hover:text-accent transition-colors">
+                                    <i data-lucide="book" class="w-3 h-3 mr-2"></i> Manual de Usuario
+                                </a>
+                                <a href="https://andrxszz01.github.io/control-inventario-az/REQUISITOS_portable.html" target="_blank" class="flex items-center text-xs text-slate-400 hover:text-accent transition-colors">
+                                    <i data-lucide="info" class="w-3 h-3 mr-2"></i> Ficha Técnica
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-          </div>
+        </div>
+    </section>
 
-          <div class="pay-actions">
-            <a class="primary whatsapp-pay" href="https://wa.me/526471200790?text=Hola%2C%20ya%20realice%20mi%20pago%20del%20Plan%20Escritorio%20%28999%20MXN%29%20de%20Control%20AZ.%20Comparto%20mi%20comprobante%20para%20activacion." target="_blank" rel="noreferrer">Enviar comprobante Escritorio</a>
-            <a class="primary whatsapp-pay" href="https://wa.me/526471200790?text=Hola%2C%20ya%20realice%20mi%20pago%20del%20Plan%20Android%20%28999%20MXN%29%20de%20Control%20AZ.%20Comparto%20mi%20comprobante%20para%20activacion." target="_blank" rel="noreferrer">Enviar comprobante Android</a>
-            <a class="primary whatsapp-pay" href="https://wa.me/526471200790?text=Hola%2C%20ya%20realice%20mi%20pago%20del%20Plan%20Completo%20%28Escritorio%20%2B%20Android%29%20%281499%20MXN%29%20de%20Control%20AZ.%20Comparto%20mi%20comprobante%20para%20activacion." target="_blank" rel="noreferrer">Enviar comprobante Completo</a>
-          </div>
-
-          <h2 style="margin-top:24px;">Galeria</h2>
-          <div class="gallery">
-            <a class="shot" href="capturas/Captura%20de%20pantalla%202026-04-02%20093209.png"><img src="capturas/Captura%20de%20pantalla%202026-04-02%20093209.png" alt="Control AZ captura 1" /></a>
-            <a class="shot" href="capturas/Captura%20de%20pantalla%202026-04-02%20093241.png"><img src="capturas/Captura%20de%20pantalla%202026-04-02%20093241.png" alt="Control AZ captura 2" /></a>
-            <a class="shot" href="capturas/Captura%20de%20pantalla%202026-04-02%20093618.png"><img src="capturas/Captura%20de%20pantalla%202026-04-02%20093618.png" alt="Control AZ captura 3" /></a>
-            <a class="shot" href="capturas/Captura%20de%20pantalla%202026-04-02%20093821.png"><img src="capturas/Captura%20de%20pantalla%202026-04-02%20093821.png" alt="Control AZ captura 4" /></a>
-          </div>
-        </article>
-      </section>
-    </main>
-
+    <!-- Lightbox -->
     <div class="lightbox" id="lightbox">
-      <button class="close" id="closeLightbox" type="button">×</button>
-      <img id="lightboxImage" alt="Captura ampliada" />
+        <button class="absolute top-6 right-6 text-white text-3xl hover:text-accent transition-colors" id="closeLightbox">&times;</button>
+        <img id="lightboxImage" src="" class="max-w-full max-height-[90vh] rounded-xl shadow-2xl">
     </div>
 
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/5 text-center">
+        <p class="text-slate-600 text-[10px] tracking-[0.3em] uppercase font-bold">
+            Andrés Zárate · Engineering Case Study
+        </p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-      const lightbox = document.getElementById('lightbox');
-      const lightboxImage = document.getElementById('lightboxImage');
-      const closeLightbox = document.getElementById('closeLightbox');
+        lucide.createIcons();
+        AOS.init({ duration: 800, once: true, easing: 'ease-out' });
 
-      document.querySelectorAll('.shot').forEach((link) => {
-        link.addEventListener('click', (event) => {
-          event.preventDefault();
-          lightboxImage.src = link.getAttribute('href');
-          lightbox.classList.add('open');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightboxImage');
+        const shots = document.querySelectorAll('.shot');
+
+        shots.forEach(shot => {
+            shot.addEventListener('click', (e) => {
+                e.preventDefault();
+                lightboxImg.src = shot.getAttribute('href');
+                lightbox.classList.add('open');
+            });
         });
-      });
 
-      closeLightbox.addEventListener('click', () => {
-        lightbox.classList.remove('open');
-        lightboxImage.removeAttribute('src');
-      });
-
-      lightbox.addEventListener('click', (event) => {
-        if (event.target === lightbox) {
-          lightbox.classList.remove('open');
-          lightboxImage.removeAttribute('src');
-        }
-      });
+        document.getElementById('closeLightbox').onclick = () => lightbox.classList.remove('open');
+        lightbox.onclick = (e) => { if(e.target === lightbox) lightbox.classList.remove('open'); };
     </script>
-  </body>
+</body>
 </html>

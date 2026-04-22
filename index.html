@@ -1,290 +1,270 @@
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Catalogo de Proyectos | Andres Zarate</title>
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Andrés Zárate | Full Stack Developer</title>
+
+    <!-- SEO & Metadata -->
+    <meta name="description" content="Ingeniero en Sistemas y Desarrollador Full Stack. Especialista en automatización de procesos y sistemas administrativos.">
+    <meta name="author" content="Andrés Manuel López Zárate">
+    <meta property="og:title" content="Andrés Zárate | Full Stack Portfolio">
+    <meta property="og:description" content="Soluciones reales para negocios: POS, ERP y Gestión Administrativa.">
+
+    <!-- PWA -->
+    <meta name="theme-color" content="#030712">
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { dark: '#030712', card: '#111827', accent: '#3b82f6', gold: '#d6b46d' },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Poppins', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
     <style>
-      :root {
-        --bg: #0b1020;
-        --bg-soft: #121a2e;
-        --panel: rgba(17, 24, 39, 0.78);
-        --panel-strong: rgba(10, 15, 26, 0.88);
-        --line: rgba(255, 255, 255, 0.08);
-        --text: #f5f7fb;
-        --muted: #96a0b8;
-        --gold: #d6b46d;
-        --blue: #66a7ff;
-        --shadow: 0 24px 60px rgba(0, 0, 0, 0.38);
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        margin: 0;
-        font-family: Inter, system-ui, sans-serif;
-        color: var(--text);
-        background:
-          radial-gradient(circle at top left, rgba(214, 180, 109, 0.12), transparent 24%),
-          radial-gradient(circle at bottom right, rgba(102, 167, 255, 0.12), transparent 24%),
-          linear-gradient(160deg, var(--bg) 0%, #0d1324 45%, #101728 100%);
-      }
-
-      a {
-        color: inherit;
-        text-decoration: none;
-      }
-
-      .shell {
-        width: min(1180px, calc(100% - 32px));
-        margin: 0 auto;
-        padding: 28px 0 64px;
-      }
-
-      .hero {
-        border: 1px solid var(--line);
-        background: linear-gradient(145deg, rgba(12, 17, 28, 0.82), rgba(17, 24, 39, 0.94));
-        border-radius: 34px;
-        padding: 38px;
-        box-shadow: var(--shadow);
-      }
-
-      .eyebrow {
-        margin: 0;
-        font-size: 12px;
-        letter-spacing: 0.36em;
-        text-transform: uppercase;
-        color: var(--gold);
-      }
-
-      h1 {
-        margin: 18px 0 14px;
-        max-width: 800px;
-        font-family: Poppins, Inter, sans-serif;
-        font-size: clamp(38px, 6vw, 68px);
-        line-height: 0.98;
-      }
-
-      .hero p:last-child {
-        max-width: 720px;
-        margin: 0;
-        color: var(--muted);
-        font-size: 18px;
-        line-height: 1.7;
-      }
-
-      .hero-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-top: 22px;
-      }
-
-      .contact-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        padding: 14px 20px;
-        border-radius: 16px;
-        border: 1px solid var(--line);
-        background: rgba(255, 255, 255, 0.04);
-        color: var(--text);
-        font-weight: 700;
-      }
-
-      .contact-icon {
-        width: 30px;
-        height: 30px;
-        border-radius: 999px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(135deg, #25d366, #7cf2a6);
-        color: #08140d;
-        font-size: 13px;
-        font-weight: 900;
-      }
-
-      .projects {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 22px;
-        margin-top: 26px;
-      }
-
-      .card {
-        border: 1px solid var(--line);
-        background: linear-gradient(180deg, rgba(18, 24, 38, 0.9), rgba(10, 14, 24, 0.92));
-        border-radius: 30px;
-        padding: 28px;
-        box-shadow: var(--shadow);
-      }
-
-      .card-top {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-      }
-
-      .mark {
-        width: 64px;
-        height: 64px;
-        border-radius: 22px;
-        display: grid;
-        place-items: center;
-        font-family: Poppins, Inter, sans-serif;
-        font-size: 24px;
-        font-weight: 700;
-        color: #10141d;
-      }
-
-      .mark.az {
-        background: linear-gradient(135deg, #71b6ff, #d3ecff);
-      }
-
-      .mark.beauty {
-        background: linear-gradient(135deg, #d6b46d, #f3dfb1);
-      }
-
-      .badge {
-        display: inline-flex;
-        padding: 8px 12px;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.06);
-        color: var(--muted);
-        font-size: 12px;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-      }
-
-      h2 {
-        margin: 18px 0 8px;
-        font-family: Poppins, Inter, sans-serif;
-        font-size: 34px;
-      }
-
-      .summary {
-        margin: 0;
-        color: var(--muted);
-        line-height: 1.75;
-      }
-
-      .meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 18px;
-      }
-
-      .meta span {
-        border: 1px solid var(--line);
-        border-radius: 999px;
-        padding: 10px 14px;
-        color: #dbe1ed;
-        font-size: 14px;
-        background: rgba(255, 255, 255, 0.03);
-      }
-
-      .actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-top: 24px;
-      }
-
-      .primary,
-      .ghost {
-        padding: 14px 20px;
-        border-radius: 16px;
-        font-weight: 700;
-      }
-
-      .primary {
-        background: linear-gradient(135deg, var(--gold), #f0deac);
-        color: #141821;
-      }
-
-      .ghost {
-        border: 1px solid var(--line);
-        background: rgba(255, 255, 255, 0.03);
-      }
-
-      .footer {
-        margin-top: 28px;
-        color: var(--muted);
-        text-align: center;
-        font-size: 14px;
-      }
-
-      @media (max-width: 920px) {
-        .projects {
-          grid-template-columns: 1fr;
+        .glass { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .bg-gradient-mesh {
+            background-color: #030712;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(214, 180, 109, 0.1) 0px, transparent 50%);
         }
-
-        .hero,
-        .card {
-          padding: 24px;
-        }
-      }
+        .blob { filter: blur(40px); position: absolute; z-index: -1; opacity: 0.2; }
+        .project-card:hover { transform: translateY(-5px); transition: transform 0.3s ease; }
+        .project-image { transition: transform 0.6s ease, filter 0.3s ease; filter: brightness(0.4); }
+        .project-card:hover .project-image { transform: scale(1.1); filter: brightness(0.7); }
     </style>
-  </head>
-  <body>
-    <main class="shell">
-      <section class="hero">
-        <p class="eyebrow">Mis Proyectos en Venta</p>
-        <h1>Software para tu negocio.</h1>
-        <p>Catalogo publico de proyectos desarrollados para operacion, control y administracion. Cada sistema cuenta con una vista dedicada para conocer su propuesta, alcance visual y accesos principales.</p>
-        <div class="hero-actions">
-          <a class="contact-chip" href="https://wa.me/526471200790?text=Hola%2C%20quiero%20informacion%20sobre%20tus%20proyectos%20y%20metodos%20de%20pago." target="_blank" rel="noreferrer">
-            <span class="contact-icon">WA</span>
-            <span>Contacto</span>
-          </a>
+</head>
+<body class="bg-dark text-slate-200 font-sans bg-gradient-mesh">
+
+    <!-- Nav -->
+    <nav class="fixed top-0 w-full z-50 glass border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <span class="font-display font-bold text-xl tracking-tighter text-white">AZ<span class="text-accent">.</span></span>
+            <div class="hidden md:flex space-x-8 text-sm font-medium">
+                <a href="#proyectos" class="hover:text-accent transition-colors">Proyectos</a>
+                <a href="#experiencia" class="hover:text-accent transition-colors">Experiencia</a>
+                <a href="#contacto" class="hover:text-accent transition-colors">Contacto</a>
+            </div>
+            <a href="https://wa.me/526471200790" class="bg-white text-dark px-5 py-2 rounded-full text-sm font-bold hover:bg-accent hover:text-white transition-all">Contratar</a>
         </div>
-      </section>
+    </nav>
 
-      <section class="projects">
-        <article class="card">
-          <div class="card-top">
-            <div class="mark az">IV</div>
-            <span class="badge">Inventario y ventas</span>
-          </div>
-          <h2>Control de Inventario y Ventas</h2>
-          <p class="summary">Sistema completo para el control de inventario, ventas y caja, pensado para negocios. Todo esta organizado en una sola pagina: modulos, capturas, documentacion y metodos de pago, para que entiendas y uses el sistema sin complicaciones ademas de una galeria visual del sistema.</p>
-          <div class="meta">
-            <span>Windows</span>
-            <span>Android</span>
-            <span>Ventas</span>
-            <span>Planes y pagos</span>
-          </div>
-          <div class="actions">
-            <a class="primary" href="control-az.html">Ver proyecto</a>
-            <a class="ghost" href="https://wa.me/526471200790?text=Hola%2C%20quiero%20informacion%20sobre%20Control%20de%20Inventario%20AZ%20y%20sus%20metodos%20de%20pago." target="_blank" rel="noreferrer">Contacto</a>
-          </div>
-        </article>
+    <!-- Hero -->
+    <section class="relative pt-32 pb-20 px-6 overflow-hidden">
+        <div class="blob w-96 h-96 bg-accent top-[-10%] left-[-10%] rounded-full"></div>
+        <div class="max-w-7xl mx-auto">
+            <div class="max-w-3xl" data-aos="fade-up">
+                <span class="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-widest text-accent uppercase bg-accent/10 border border-accent/20 rounded-full">Ingeniero en Sistemas | Full Stack Developer</span>
+                <h1 class="font-display text-5xl md:text-7xl font-extrabold mb-6 leading-tight text-white">Desarrollo sistemas que <span class="text-accent">automatizan</span> negocios.</h1>
+                <p class="text-lg text-slate-400 mb-10 leading-relaxed">Hola, soy <span class="text-white font-semibold">Andrés Manuel López Zárate</span>. Me especializo en crear soluciones de software que optimizan procesos y reducen tiempos operativos hasta en un <span class="text-gold font-bold">40%</span>.</p>
+                <div class="flex gap-4">
+                    <a href="#proyectos" class="bg-accent hover:bg-blue-600 text-white px-8 py-4 rounded-xl font-bold transition-all transform hover:-translate-y-1">Ver Proyectos</a>
+                    <a href="#contacto" class="glass hover:bg-white/10 text-white px-8 py-4 rounded-xl font-bold transition-all">Contactar</a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        <article class="card">
-          <div class="card-top">
-            <div class="mark beauty">BS</div>
-            <span class="badge">Salon y estetica</span>
-          </div>
-          <h2>BeautySys</h2>
-          <p class="summary">Software de escritorio para salones, barberias y centros de estetica. Incluye agenda, clientes, caja, inventario, reportes, branding del negocio y una galeria visual del sistema.</p>
-          <div class="meta">
-            <span>Windows</span>
-            <span>Sin internet</span>
-            <span>Administracion</span>
-          </div>
-          <div class="actions">
-            <a class="primary" href="beautysys.html">Ver proyecto</a>
-            <a class="ghost" href="https://wa.me/526471200790?text=Hola%2C%20quiero%20informacion%20sobre%20BeautySys%20y%20sus%20metodos%20de%20pago." target="_blank" rel="noreferrer">Contacto</a>
-          </div>
-        </article>
-      </section>
+    <!-- Stats -->
+    <section class="py-12 px-6 border-y border-white/5 bg-white/[0.02]">
+        <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div data-aos="fade-up">
+                <div class="text-3xl font-bold text-white font-display">+40%</div>
+                <div class="text-xs text-slate-500 uppercase tracking-widest mt-1">Eficiencia</div>
+            </div>
+            <div data-aos="fade-up" data-aos-delay="100">
+                <div class="text-3xl font-bold text-white font-display">Miles</div>
+                <div class="text-xs text-slate-500 uppercase tracking-widest mt-1">Registros</div>
+            </div>
+            <div data-aos="fade-up" data-aos-delay="200">
+                <div class="text-3xl font-bold text-white font-display">SaaS</div>
+                <div class="text-xs text-slate-500 uppercase tracking-widest mt-1">Enfoque</div>
+            </div>
+            <div data-aos="fade-up" data-aos-delay="300">
+                <div class="text-3xl font-bold text-white font-display">24/7</div>
+                <div class="text-xs text-slate-500 uppercase tracking-widest mt-1">Soporte</div>
+            </div>
+        </div>
+    </section>
 
-      <p class="footer">ig: @andrxsz · Andres Zarate · Catalogo de proyectos</p>
-    </main>
-  </body>
+    <!-- Proyectos -->
+    <section id="proyectos" class="py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="font-display text-4xl font-bold text-white mb-16 text-center">Soluciones Destacadas</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <!-- Card 1: Control AZ -->
+                <div class="project-card group glass p-8 rounded-[2rem] border-white/5 relative overflow-hidden" data-aos="fade-up">
+                    <div class="aspect-video rounded-2xl mb-6 relative overflow-hidden flex items-center justify-center bg-slate-900 border border-white/5">
+                        <img src="imagenes/Captura%20de%20pantalla%202026-04-04%20204129.png" class="project-image absolute inset-0 w-full h-full object-cover">
+                        <i data-lucide="package" class="relative z-10 w-12 h-12 text-accent group-hover:scale-110 transition-transform"></i>
+                    </div>
+                    <div class="flex gap-2 mb-4">
+                        <span class="text-[10px] bg-accent/10 text-accent px-2 py-0.5 rounded font-bold uppercase tracking-widest">C# / .NET</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-3">Control de Inventario AZ</h3>
+                    <p class="text-slate-400 text-sm mb-6 leading-relaxed">Sistema POS offline con dashboard avanzado y control total de stock para negocios de alto flujo.</p>
+                    <a href="control-az.html" class="inline-flex items-center text-sm font-bold text-accent group-hover:underline">Ver Caso de Estudio <i data-lucide="chevron-right" class="ml-1 w-4 h-4"></i></a>
+                </div>
+
+                <!-- Card 2: BeautySys -->
+                <div class="project-card group glass p-8 rounded-[2rem] border-white/5 relative overflow-hidden" data-aos="fade-up" data-aos-delay="100">
+                    <div class="aspect-video rounded-2xl mb-6 relative overflow-hidden flex items-center justify-center bg-slate-900 border border-white/5">
+                        <img src="imagenes/Captura%20de%20pantalla%202026-04-04%20203940.png" class="project-image absolute inset-0 w-full h-full object-cover">
+                        <i data-lucide="scissors" class="relative z-10 w-12 h-12 text-gold group-hover:scale-110 transition-transform"></i>
+                    </div>
+                    <div class="flex gap-2 mb-4">
+                        <span class="text-[10px] bg-gold/10 text-gold px-2 py-0.5 rounded font-bold uppercase tracking-widest">Electron / React</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-3">BeautySys</h3>
+                    <p class="text-slate-400 text-sm mb-6 leading-relaxed">Gestión integral para salones de belleza y barberías con agenda y finanzas en un solo lugar.</p>
+                    <a href="beautysys.html" class="inline-flex items-center text-sm font-bold text-gold group-hover:underline">Ver Caso de Estudio <i data-lucide="chevron-right" class="ml-1 w-4 h-4"></i></a>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="project-card group glass p-8 rounded-[2rem] border-white/5" data-aos="fade-up" data-aos-delay="200">
+                    <div class="aspect-video rounded-2xl mb-6 bg-gradient-to-br from-emerald-600/20 to-teal-600/20 flex items-center justify-center border border-white/5">
+                        <i data-lucide="layout-dashboard" class="w-12 h-12 text-emerald-400"></i>
+                    </div>
+                    <div class="flex gap-2 mb-4">
+                        <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold uppercase tracking-widest">ERP Admin</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-3">Sistema ASZYS</h3>
+                    <p class="text-slate-400 text-sm mb-6 leading-relaxed">Módulo administrativo robusto enfocado en la relación con clientes y flujos de pagos complejos.</p>
+                    <span class="text-[10px] text-slate-500 font-bold italic">Privado - Caso de estudio bajo solicitud</span>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section class="py-24 px-6 bg-white/[0.01]">
+        <div class="max-w-7xl mx-auto flex flex-col items-center">
+            <h2 class="font-display text-3xl font-bold text-white mb-16 text-center">Tecnologías Core</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6 w-full">
+                <div class="glass p-6 rounded-2xl flex flex-col items-center justify-center hover:border-accent/50 transition-colors">
+                    <i data-lucide="code-2" class="w-8 h-8 text-accent mb-3"></i>
+                    <span class="text-[10px] font-bold uppercase tracking-widest">C# / .NET</span>
+                </div>
+                <div class="glass p-6 rounded-2xl flex flex-col items-center justify-center hover:border-accent/50 transition-colors">
+                    <i data-lucide="file-json" class="w-8 h-8 text-yellow-400 mb-3"></i>
+                    <span class="text-[10px] font-bold uppercase tracking-widest">JavaScript</span>
+                </div>
+                <div class="glass p-6 rounded-2xl flex flex-col items-center justify-center hover:border-accent/50 transition-colors">
+                    <i data-lucide="layers" class="w-8 h-8 text-blue-400 mb-3"></i>
+                    <span class="text-[10px] font-bold uppercase tracking-widest">React / Node</span>
+                </div>
+                <div class="glass p-6 rounded-2xl flex flex-col items-center justify-center hover:border-accent/50 transition-colors">
+                    <i data-lucide="database" class="w-8 h-8 text-red-400 mb-3"></i>
+                    <span class="text-[10px] font-bold uppercase tracking-widest">SQL Server</span>
+                </div>
+                <div class="glass p-6 rounded-2xl flex flex-col items-center justify-center hover:border-accent/50 transition-colors">
+                    <i data-lucide="monitor" class="w-8 h-8 text-purple-400 mb-3"></i>
+                    <span class="text-[10px] font-bold uppercase tracking-widest">Electron</span>
+                </div>
+                <div class="glass p-6 rounded-2xl flex flex-col items-center justify-center hover:border-accent/50 transition-colors">
+                    <i data-lucide="wind" class="w-8 h-8 text-teal-400 mb-3"></i>
+                    <span class="text-[10px] font-bold uppercase tracking-widest">TailwindCSS</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trayectoria -->
+    <section id="experiencia" class="py-24 px-6">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="font-display text-4xl font-bold text-white mb-12 text-center">Trayectoria</h2>
+            <div class="relative pl-8 border-l-2 border-accent/30" data-aos="fade-left">
+                <div class="absolute w-4 h-4 bg-accent rounded-full -left-[9px] top-0 shadow-[0_0_10px_#3b82f6]"></div>
+                <span class="text-sm font-bold text-accent">Actualidad</span>
+                <h3 class="text-2xl font-bold text-white mt-1">Desarrollador Full Stack</h3>
+                <p class="text-slate-300 font-semibold mb-4">Rifas Paye Quintero</p>
+                <ul class="text-slate-400 space-y-2 text-sm leading-relaxed">
+                    <li>• Diseño de ecosistemas administrativos para gestión masiva.</li>
+                    <li>• Automatización de flujos internos reduciendo tiempos en un 35%.</li>
+                    <li>• Gestión de bases de datos de alto volumen de transacciones.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contacto" class="py-24 px-6 border-t border-white/5 text-center">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="font-display text-3xl font-bold text-white mb-4">Búsqueda de Empleo, Contactame</h2>
+            <p class="text-slate-400 mb-12">Disponible para oportunidades de tiempo completo y proyectos estratégicos.</p>
+
+            <div class="flex flex-wrap justify-center gap-4 md:gap-6 mb-16">
+                <!-- LinkedIn -->
+                <a href="https://linkedin.com/in/andrxsz" target="_blank" class="flex items-center gap-3 glass px-6 py-3 rounded-full hover:bg-[#0077b5] hover:text-white transition-all group">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" class="w-5 h-5 fill-[#0077b5] group-hover:fill-white transition-colors">
+                        <path d="M19 3A2 2 0 0 1 21 5V19A2 2 0 0 1 19 21H5A2 2 0 0 1 3 19V5A2 2 0 0 1 5 3H19ZM8.34 17V10.84H6.27V17H8.34ZM7.31 9.99A1.2 1.2 0 1 0 7.31 7.59A1.2 1.2 0 0 0 7.31 9.99ZM17 17V13.5C17 11.63 16.6 10.19 14.41 10.19C13.36 10.19 12.66 10.77 12.37 11.32H12.34V10.84H10.36V17H12.43V13.95C12.43 13.14 12.58 12.35 13.59 12.35C14.59 12.35 14.61 13.29 14.61 14V17H17Z"/>
+                    </svg>
+                    <span class="text-sm font-bold">LinkedIn</span>
+                </a>
+
+                <!-- GitHub -->
+                <a href="https://github.com/Andrxszz01" target="_blank" class="flex items-center gap-3 glass px-6 py-3 rounded-full hover:bg-white/10 transition-all group">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" class="w-5 h-5 fill-white">
+                        <path d="M12 .5C5.65.5.5 5.65.5 12A11.5 11.5 0 0 0 8.36 22.93C8.94 23.04 9.15 22.68 9.15 22.37V20.21C5.94 20.91 5.27 18.85 5.27 18.85C4.74 17.5 3.97 17.14 3.97 17.14C2.91 16.42 4.05 16.44 4.05 16.44C5.22 16.52 5.83 17.65 5.83 17.65C6.87 19.43 8.56 18.91 9.22 18.61C9.33 17.85 9.63 17.33 9.96 17.03C7.4 16.74 4.71 15.75 4.71 11.32C4.71 10.06 5.16 9.03 5.9 8.22C5.78 7.93 5.39 6.76 6.01 5.19C6.01 5.19 6.98 4.88 9.13 6.34A11.5 11.5 0 0 1 12 5.96C12.98 5.96 13.97 6.09 14.87 6.34C17.02 4.88 17.99 5.19 17.99 5.19C18.61 6.76 18.22 7.93 18.1 8.22C18.84 9.03 19.29 10.06 19.29 11.32C19.29 15.76 16.59 16.74 14.02 17.02C14.44 17.38 14.81 18.11 14.81 19.22V22.37C14.81 22.68 15.02 23.05 15.61 22.93A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/>
+                    </svg>
+                    <span class="text-sm font-bold">GitHub</span>
+                </a>
+
+                <!-- Email -->
+                <a href="mailto:manuel-lionel123@hotmail.com" class="flex items-center gap-3 glass px-6 py-3 rounded-full hover:bg-accent hover:text-white transition-all group text-white">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" class="w-5 h-5 fill-accent group-hover:fill-white transition-colors">
+                        <path d="M2 6.75A2.75 2.75 0 0 1 4.75 4h14.5A2.75 2.75 0 0 1 22 6.75v10.5A2.75 2.75 0 0 1 19.25 20H4.75A2.75 2.75 0 0 1 2 17.25V6.75Zm2.17-.25 7.26 5.44a1 1 0 0 0 1.2 0l7.2-5.44H4.17Zm15.83 1.88-6.17 4.66a3 3 0 0 1-3.62 0L4 8.43v8.82c0 .41.34.75.75.75h14.5c.41 0 .75-.34.75-.75V8.38Z"/>
+                    </svg>
+                    <span class="text-sm font-bold">Email</span>
+                </a>
+
+                <!-- WhatsApp -->
+                <a href="https://wa.me/526471200790" target="_blank" class="flex items-center gap-3 glass px-6 py-3 rounded-full hover:bg-[#25D366] hover:text-white transition-all group">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" class="w-5 h-5 fill-[#25D366] group-hover:fill-white transition-colors">
+                        <path d="M20.52 3.48A11.9 11.9 0 0 0 12.06 0C5.53 0 .21 5.32.21 11.85c0 2.09.55 4.14 1.59 5.95L0 24l6.39-1.67a11.84 11.84 0 0 0 5.67 1.44h.01c6.53 0 11.85-5.32 11.85-11.85c0-3.17-1.23-6.15-3.4-8.44ZM12.07 21.77h-.01a9.86 9.86 0 0 1-5.03-1.38l-.36-.21-3.79.99 1.01-3.69-.24-.38a9.82 9.82 0 0 1-1.5-5.25C2.15 6.41 6.63 1.93 12.07 1.93c2.63 0 5.1 1.02 6.96 2.89a9.77 9.77 0 0 1 2.88 6.96c0 5.44-4.43 9.99-9.84 9.99Zm5.41-7.42c-.3-.15-1.78-.88-2.06-.98c-.28-.1-.48-.15-.68.15s-.78.98-.96 1.18c-.17.2-.35.22-.65.07c-.3-.15-1.27-.47-2.42-1.49a9.12 9.12 0 0 1-1.68-2.08c-.18-.3-.02-.46.13-.61c.13-.13.3-.35.45-.52c.15-.18.2-.3.3-.5c.1-.2.05-.38-.03-.53c-.08-.15-.68-1.64-.94-2.25c-.25-.6-.5-.51-.68-.52h-.58c-.2 0-.53.08-.8.38c-.28.3-1.05 1.03-1.05 2.5s1.08 2.9 1.23 3.1c.15.2 2.12 3.23 5.13 4.53c.72.31 1.28.5 1.72.64c.72.23 1.37.2 1.89.12c.58-.09 1.78-.73 2.03-1.44c.25-.71.25-1.32.17-1.45c-.08-.13-.28-.2-.58-.35Z"/>
+                    </svg>
+                    <span class="text-sm font-bold">WhatsApp</span>
+                </a>
+            </div>
+
+            <p class="text-slate-600 text-[10px] tracking-[0.3em] uppercase font-bold">
+                &copy; <span id="current-year"></span> · Andrés Manuel López Zárate · Ingeniero en Sistemas
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Inicializar Iconos
+        lucide.createIcons();
+
+        // Año Dinámico
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Animaciones
+        AOS.init({ duration: 800, once: true });
+
+        // Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); });
+        }
+    </script>
+</body>
 </html>
